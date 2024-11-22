@@ -7,7 +7,7 @@ import threading  # 속도 향상
 results = []
 results_lock = threading.Lock()  # 스레드 안전성을 위한 Lock 객체
 
-def parse_ports(port_input):
+def parsePorts(port_input):
     """
     입력된 포트를 숫자로 변환한 후, 중복 제거하여 오름차순으로 정렬된 포트 번호 리스트를 반환.
     """
@@ -25,7 +25,7 @@ def parse_ports(port_input):
     return sorted(ports)
 
 
-def tcp_ack_scan_threaded(target_ip, ports, timeout=1, num_threads=10):
+def tcpAckScanThreaded(target_ip, ports, timeout=1, num_threads=10):
     """
     TCP ACK 스캔을 스레드를 활용하여 실행.
     """
@@ -39,7 +39,7 @@ def tcp_ack_scan_threaded(target_ip, ports, timeout=1, num_threads=10):
     # 스레드 생성 및 시작
     for i in range(0, len(ports), chunk_size):
         thread = threading.Thread(
-            target=scan_ports_chunk, args=(target_ip, ports[i:i + chunk_size], timeout)
+            target=scanPortsChunk, args=(target_ip, ports[i:i + chunk_size], timeout)
         )
         threads.append(thread)
         thread.start()
@@ -48,28 +48,31 @@ def tcp_ack_scan_threaded(target_ip, ports, timeout=1, num_threads=10):
     for thread in threads:
         thread.join()
 
-   # 정렬된 결과 출력
-    sorted_results = sorted(results, key=lambda x: x[0]) # 포트 번호 기준 정렬
-    print("\nScan Results:")
+    # 필터링되지 않은 결과만 출력
+    filtered_results = [result for result in results if result[1] != "필터링됨 (응답 없음)"]
+
+    # 정렬된 결과 출력
+    sorted_results = sorted(filtered_results, key=lambda x: x[0])  # 포트 번호 기준 정렬
+    
+    print("\nScannaing..:")
     for port, state in sorted_results:
         print(f"Port {port}: {state}")
-     
+
     # 소요 시간 출력
     elapsed_time = time.time() - start_time
     print(f"\n스캔 완료. 소요 시간: {elapsed_time:.2f}초")
 
 
-def scan_ports_chunk(target_ip, ports, timeout):
+def scanPortsChunk(target_ip, ports, timeout):
     """
     주어진 포트 리스트를 스캔하여 필터링 상태를 확인.
     """
     for port in ports:
-        state = scan_port_ack(target_ip, port, timeout)
+        state = scanPortAck(target_ip, port, timeout)
         # 결과를 공용 리스트에 추가 (스레드 안전하게 처리)
         with results_lock:
             results.append((port, state))
-
-def scan_port_ack(ip, port, timeout):
+def scanPortAck(ip, port, timeout):
     """
     개별 포트의 TCP ACK 스캔 수행.
     """
@@ -96,5 +99,5 @@ if __name__ == "__main__":
     timeout = float(input("응답 대기 시간을 입력하시오 (초 단위, 기본값 1): ") or 1)  # 응답 대기 시간 (기본 1초)
     num_threads = int(input("스레드 개수를 입력하시오 (기본값 10): ") or 10)  # 스레드 개수
 
-    ports = parse_ports(port_input)
-    tcp_ack_scan_threaded(target, ports, timeout=timeout, num_threads=num_threads)
+    ports = parsePorts(port_input)
+    tcpAckScanThreaded(target, ports, timeout=timeout, num_threads=num_threads)
