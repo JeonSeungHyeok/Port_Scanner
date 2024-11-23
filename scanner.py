@@ -5,5 +5,6 @@ class port_scanner:
         self.ip = ip
         self.port = port
         
-    def port_scanner(self):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREM)
+    def tcp_syn_scanner(self):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        
