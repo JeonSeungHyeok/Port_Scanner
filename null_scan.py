@@ -8,6 +8,5 @@ def scan_null_port(targetIp, port):
     if response:
         if response.haslayer(TCP) and response[TCP].flags == "R":
             return port, "Closed"
-    else:
-        return port, "Open or Filtered"  # 응답 없음
-    return port, "Filtered"
+    return port, "Open or Filtered"  # 응답 없음
+
