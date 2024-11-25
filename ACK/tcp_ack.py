@@ -1,13 +1,13 @@
 from scapy.all import IP, TCP, sr1, conf
 import random
 
-def scanPortAck(ip, port, timeout,max_tries):
+def scan_port_ack(ip, port, timeout,maxTries):
     """특정 포트에 대해 TCP ACK 스캔 수행"""
-    for i in range(max_tries):
-        src_port = random.randint(1024, 65535)  # 랜덤 소스 포트 설정
-        ip_packet = IP(dst=ip)  # 대상 IP를 설정한 IP 패킷 생성
-        tcp_packet = TCP(sport=src_port, dport=port, flags='A')  # ACK 플래그를 설정한 TCP 패킷 생성
-        response = sr1(ip_packet / tcp_packet, timeout=timeout, verbose=0)  # 패킷 전송 및 응답 대기
+    for i in range(maxTries):
+        srcPort = random.randint(10000, 65535)  # 랜덤 소스 포트 설정
+        ipPacket = IP(dst=ip)  # 대상 IP를 설정한 IP 패킷 생성
+        tcpPacket = TCP(sport=srcPort, dport=port, flags='A')  # ACK 플래그를 설정한 TCP 패킷 생성
+        response = sr1(ipPacket / tcpPacket, timeout=timeout, verbose=0)  # 패킷 전송 및 응답 대기
         if response is None:
             continue
         else:
