@@ -1,7 +1,6 @@
 from ack_scan import scan_ack_port
 from syn_scan import scan_syn_port
 import argparse
-import socket
 from concurrent.futures import ThreadPoolExecutor
 
 def parse_ports(portInput):
