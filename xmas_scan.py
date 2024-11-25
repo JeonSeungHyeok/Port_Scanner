@@ -7,7 +7,7 @@ def scan_xmas_port(targetIp, port):
     response = sr1(xmasPacket, timeout=1, verbose=0)
 
     if response:
-        if response.haslayer(TCP) and response[TCP].flags == "RA":
+        if response.haslayer(TCP) and response[TCP].flags == "R":
             return port, "Closed"
     else:
         return port, "Open or Filtered"  # 응답 없음
