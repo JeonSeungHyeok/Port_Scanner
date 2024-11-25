@@ -1,3 +1,4 @@
+import socket
 from scapy.all import IP, TCP, sr1, conf
 import random
 import time
@@ -25,6 +26,17 @@ def parse_ports(port_input):
     return sorted(ports)
 
 
+def get_service_name(port):
+    """
+    주어진 포트 번호에 대한 서비스 이름을 반환.
+    알 수 없는 포트의 경우 'unknown' 반환.
+    """
+    try:
+        return socket.getservbyport(port, "tcp")
+    except OSError:
+        return "unknown"
+
+
 def scan_port_ack(ip, port, timeout):
     """
     개별 포트의 TCP ACK 스캔 수행.
@@ -36,13 +48,13 @@ def scan_port_ack(ip, port, timeout):
     response = sr1(ip_packet / tcp_packet, timeout=timeout, verbose=0)  # 패킷 전송 및 응답 대기
 
     if response is None:
-        return port, "Filtered (응답 없음)"
+        return port, "filtered", get_service_name(port)
     elif response.haslayer(TCP) and response[TCP].flags == "R":
-        return port, "Unfiltered (RST 수신)"
+        return port, "unfiltered", get_service_name(port)
     elif response.haslayer(IP) and response[IP].proto == 1:  # ICMP
-        return port, "Filtered (ICMP 메시지 수신)"
+        return port, "filtered", get_service_name(port)
     else:
-        return port, "Unknown (상태 확인 불가)"
+        return port, "unknown", get_service_name(port)
 
 
 def tcp_ack_scan_threaded(target_ip, ports, timeout=1, num_threads=10):
@@ -62,14 +74,14 @@ def tcp_ack_scan_threaded(target_ip, ports, timeout=1, num_threads=10):
     pool.wait_completion()  # 모든 작업이 완료될 때까지 대기
 
     # Unfiltered 결과만 필터링
-    unfiltered_results = [result for result in results if "Unfiltered" in result[1]]
+    unfiltered_results = [result for result in results if result[1] == "unfiltered"]
 
     # 정렬된 결과 출력
     sorted_results = sorted(unfiltered_results, key=lambda x: x[0])  # 포트 번호 기준 정렬
 
-    print("\nUnfiltered 포트:")
-    for port, state in sorted_results:
-        print(f"Port {port}: {state}")
+    print(f"{'PORT':<10}{'STATE':<12}{'SERVICE'}")
+    for port, state, service in sorted_results:
+        print(f"{port}/tcp   {state:<12}{service}")
 
     # 소요 시간 출력
     elapsed_time = time.time() - start_time
