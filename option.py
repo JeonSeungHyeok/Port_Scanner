@@ -4,6 +4,7 @@ def add_options(parser):
     parser.add_argument('-A', action='store_true', dest='ack', help="TCP ACK scan")
     parser.add_argument('-N', action='store_true', dest='Null', help="TCP Null scan")
     parser.add_argument('-X', action='store_true', dest='Xmas', help="TCP X-mas scan")
+    parser.add_argument('-sV', action='store_true', dest='service_version', help="Detect service and version information")
     
     parser.add_argument('-IP', required=True, dest='ip', help="Specify target IP")
     parser.add_argument('-P', required=True, dest='port', help="Specify port range (e.g., '22,80,443' or '20-30')")

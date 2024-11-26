@@ -4,13 +4,14 @@ from SYN.tcp_syn import *
 import time
 
 class Thread:
-    def __init__(self,ip:str,port:str,timeout:int,numThread:int,maxTries:int,scanMethod)->None:
+    def __init__(self,ip:str,port:str,timeout:int,numThread:int,maxTries:int,scanMethod,serviceVersion)->None:
         self.ip = ip
         self.port = port
         self.timeout = timeout
         self.numThread = numThread
         self.maxTries = maxTries
         self.scanMethod = scanMethod
+        self.serviceVersion = serviceVersion
 
     def parse_ports(self,portInput:list)->set:
         """입력된 포트를 숫자로 변환한 후, 중복 제거하여 오름차순으로 정렬된 포트 번호 리스트를 반환."""
@@ -37,7 +38,7 @@ class Thread:
         }
         scanFunction = scanMethods.get(self.scanMethod)
         with ThreadPoolExecutor(max_workers=self.numThread,) as executor:
-            futures = [executor.submit(scanFunction, self.ip, port, self.timeout,self.maxTries) for port in ports]
+            futures = [executor.submit(scanFunction, self.ip, port, self.timeout,self.maxTries, self.serviceVersion) for port in ports]
             for future in futures:
                 results.append(future.result())
         return results, startTime
@@ -48,8 +49,15 @@ class Thread:
         filteredResults.sort(key=lambda x: x[0])
 
         print("\n스캔 결과:")
-        for port, state in filteredResults:
-            print(f"Port {port}: {state}")
+
+        if self.serviceVersion:  # -sV 옵션이 있는 경우
+            print(f"{'PORT':<10}{'STATE':<20}{'SERVICE':<20}{'BANNER'}")
+            for port, state, service, banner in filteredResults:
+                print(f"{port:<10}{state:<20}{service or 'N/A':<20}{banner or 'N/A'}")
+        else:  # -sV 옵션이 없는 경우
+            print(f"{'PORT':<10}{'STATE':<20}")
+            for port, state, _, _ in filteredResults:
+                print(f"{port:<10}{state:<20}")
 
         # 소요 시간 출력
         elapsedTime = time.time() - startTime
