@@ -1,8 +1,8 @@
 from ack_scan import scan_ack_port
 from syn_scan import scan_syn_port
 import argparse
-import socket
 from concurrent.futures import ThreadPoolExecutor
+import time
 
 def parse_ports(portInput):
     """입력된 포트를 숫자로 변환한 후, 중복 제거하여 오름차순으로 정렬된 포트 번호 리스트 반환."""
@@ -15,13 +15,28 @@ def parse_ports(portInput):
             ports.add(int(part.strip()))
     return sorted(ports)
 
+def parse_ip(ipInput):
+    ips=list()
+    for part in ipInput.split(","):
+        ips.append(part)
+    return ips
+
 def add_options(parser):
     """명령줄 인자를 추가하는 함수"""
     parser.add_argument('-S', action='store_true', dest='syn', help="TCP SYN scan")
     parser.add_argument('-A', action='store_true', dest='ack', help="TCP ACK scan")
+    parser.add_argument('-N', action='store_true', dest='Null', help="TCP Null scan")
+    parser.add_argument('-X', action='store_true', dest='Xmas', help="TCP X-mas scan")
+    
     parser.add_argument('-IP', required=True, dest='ip', help="Specify target IP")
     parser.add_argument('-P', required=True, dest='port', help="Specify port range (e.g., '22,80,443' or '20-30')")
+    
     parser.add_argument('-T', type=int, default=1, dest='threads', help="Specify number of threads (default: 1)")
+
+    parser.add_argument('-OS', action='store_true', dest='os', help="Detection OS")
+    
+    parser.add_argument('-oj', action='store_true', dest='output_json', help="Output JSON")
+    parser.add_argument('-ox', action='store_true', dest='output_xml', help="Output XML")
 
 def perform_scan(scanFunction, targetIp, ports, numThreads, filterStatus):
     """스캔을 쓰레드를 활용해 병렬로 수행"""
@@ -30,8 +45,9 @@ def perform_scan(scanFunction, targetIp, ports, numThreads, filterStatus):
         futures = {executor.submit(scanFunction, targetIp, port): port for port in ports}
         for future in futures:
             result = future.result()
-            if result[1] == filterStatus:  # 원하는 상태만 출력
-                results.append(result)
+            results.append(result)
+            # if result[1] == filterStatus:  # 원하는 상태만 출력
+            #     results.append(result)
 
     results.sort(key=lambda x: x[0])
     for port, state in results:
@@ -41,19 +57,25 @@ def main():
     parser = argparse.ArgumentParser()
     add_options(parser)
     options = parser.parse_args()
-
+    
     targetIp = options.ip
     ports = parse_ports(options.port)
     numThreads = options.threads
-
+    start_time = time.time()
     if options.ack:
-        print(f"Starting TCP ACK scan on {targetIp} with ports {ports} using {numThreads} threads.")
+        print(f"Starting TCP ACK scan on {targetIp} using {numThreads} threads.")
         perform_scan(scan_ack_port, targetIp, ports, numThreads, "Unfiltered")
+    
     elif options.syn:
-        print(f"Starting TCP SYN scan on {targetIp} with ports {ports} using {numThreads} threads.")
+        print(f"Starting TCP SYN scan on {targetIp} using {numThreads} threads.")
         perform_scan(scan_syn_port, targetIp, ports, numThreads, "Open")
+    
     else:
         print("Please specify a scan type using -A (ACK) or -S (SYN).")
+    end_time = time.time()
+
+    print(f"Execution time: {end_time - start_time:.6f} seconds")
 
 if __name__ == '__main__':
     main()
+    
