@@ -1,6 +1,9 @@
 from concurrent.futures import ThreadPoolExecutor
 from ACK.tcp_ack import *
 from SYN.tcp_syn import *
+from NULL.tcp_null import *
+from XMAS.tcp_xmas import *
+from VERSION.find_version import *
 import time
 
 class Thread:
@@ -32,8 +35,8 @@ class Thread:
         scanMethods = {
             "syn":scan_syn_port,
             "ack":scan_port_ack,
-            #"Null":,
-            #"Xmas":
+            "Null":scan_null_port,
+            "Xmas":scan_xmas_port
         }
         scanFunction = scanMethods.get(self.scanMethod)
         with ThreadPoolExecutor(max_workers=self.numThread,) as executor:
@@ -44,12 +47,17 @@ class Thread:
 
     def print_result(self,results:list,startTime:time)->None:
         # 결과 정렬 및 출력
-        filteredResults = [result for result in results if result[1] == "필터링되지 않음 (RST 수신)" or result[1]=='Open']
+        if self.scanMethod in ['Xmas','Null']:
+            filteredResults = [result for result in results]
+        else:   
+            filteredResults = [result for result in results if result[1] == "필터링되지 않음 (RST 수신)" or result[1]=='Open']
         filteredResults.sort(key=lambda x: x[0])
-
-        print("\n스캔 결과:")
+        #input('2')
+        print(f"\n{self.scanMethod} 스캔 결과:")
         for port, state in filteredResults:
             print(f"Port {port}: {state}")
+            if self.scanMethod == 'syn':
+                get_service_version(self.ip, port)
 
         # 소요 시간 출력
         elapsedTime = time.time() - startTime
