@@ -48,7 +48,7 @@ class Thread:
         # 결과 정렬 및 출력
         filteredResults = [result for result in results if result[1] == "Unfiltered (RST received)" or result[1]=='Open' or result[1]=="Open or Filtered"]
         filteredResults.sort(key=lambda x: x[0])
-        print(filteredResults)
+
         print("\n스캔 결과:")
         
         if self.scanMethod == "version":
