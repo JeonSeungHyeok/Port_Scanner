@@ -13,7 +13,6 @@ def scan_null_port(targetIp, port, timeout, maxTries):
             break
 
     if response:
-        if response.haslayer(TCP) and response[TCP].flags == "RA":
+        if response.haslayer(TCP) and response[TCP].flags == "R":
             return port, "Closed"
     return port, "Open or Filtered"
-
