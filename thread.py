@@ -33,7 +33,7 @@ class Thread:
         ports = self.parse_ports(self.port)
         scanMethods = {
             "syn":scan_syn_port,
-            "ack":scan_port_ack,
+            "ack":scan_ack_port,
             "Null":scan_null_port,
             "Xmas":scan_xmas_port
         }
