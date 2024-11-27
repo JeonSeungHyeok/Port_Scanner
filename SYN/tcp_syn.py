@@ -1,7 +1,7 @@
 from scapy.all import IP, TCP, sr1, send
 import random
 
-def scan_syn_port(targetIp, port,timeout,maxTries):
+def scan_syn_port(targetIp, port, timeout, maxTries):
     """단일 포트에 대해 TCP SYN 스캔 수행"""
     for i in range(maxTries):
         srcPort = random.randint(10000, 65535) # 랜덤 소스 포트 설정

@@ -1,5 +1,7 @@
 import socket
 from scapy.all import IP, TCP, sr1, send
+from SYN.tcp_syn import *
+
 def get_service_name(port):
     """
     주어진 포트 번호에 대한 서비스 이름을 반환.
@@ -23,7 +25,8 @@ def get_banner(targetIp, port, timeout=2):
     except (socket.timeout, ConnectionRefusedError, OSError):
         return "No Banner"
     
-def scan_service_version(ports,targetIp, port,timeout,maxTries):
-    ports[0]
-    service = get_service_name(port)
-    banner = get_banner(targetIp, port, timeout)
+def scan_service_version(targetIp, port, timeout, maxTries):
+    result = scan_syn_port(targetIp, port, timeout, maxTries)
+    if result[1] == "Open":
+        return result, get_service_name(port), get_banner(targetIp, port, timeout)
+    return result, None, None
