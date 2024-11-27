@@ -46,7 +46,7 @@ class Thread:
 
     def print_result(self,results:list,startTime:time)->None:
         # 결과 정렬 및 출력
-        filteredResults = [result for result in results if result[1] == "필터링되지 않음 (RST 수신)" or result[1]=='Open']
+        filteredResults = [result for result in results] #if result[1] == "필터링되지 않음 (RST 수신)" or result[1]=='Open']
         filteredResults.sort(key=lambda x: x[0])
 
         print("\n스캔 결과:")
