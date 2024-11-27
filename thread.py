@@ -1,6 +1,8 @@
 from concurrent.futures import ThreadPoolExecutor
 from ACK.tcp_ack import *
 from SYN.tcp_syn import *
+from NULL.tcp_null import *
+from XMAS.tcp_xmas import *
 import time
 
 class Thread:
@@ -32,8 +34,8 @@ class Thread:
         scanMethods = {
             "syn":scan_syn_port,
             "ack":scan_port_ack,
-            #"Null":,
-            #"Xmas":
+            "Null":scan_null_port,
+            "Xmas":scan_xmas_port
         }
         scanFunction = scanMethods.get(self.scanMethod)
         with ThreadPoolExecutor(max_workers=self.numThread,) as executor:
