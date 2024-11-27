@@ -48,9 +48,13 @@ class Thread:
         # 결과 정렬 및 출력
         filteredResults = [result for result in results if result[1] == "Unfiltered (RST received)" or result[1]=='Open' or result[1]=="Open or Filtered"]
         filteredResults.sort(key=lambda x: x[0])
-
+        print(filteredResults)
         print("\n스캔 결과:")
-        print(f"{'PORT':<10}{'STATE':<20}{'SERVICE':<20}{'BANNER'}")
-
-        for port, state, service, banner in filteredResults:
-            print(f"Port {port:<10}: {state:<20}, {service or 'N/A':<20}, {banner or 'N/A'}")
+        
+        if self.scanMethod == "version":
+            print(f"{'PORT':<10}{'STATE':<20}{'SERVICE':<20}{'BANNER'}")
+            for port, state, service, banner in filteredResults:
+                print(f"Port {port}: {state:<20}{service or 'N/A':<20}{banner or 'N/A'}")
+        else:
+            for port, state in filteredResults:
+                print(f"Port {port}: {state}")

@@ -16,7 +16,7 @@ def main():
     startTime = time.time()
     result = thread.start_thread()
     thread.print_result(result)
-    elapsedTime = startTime - time.time()
+    elapsedTime = time.time() - startTime
     print(f"\n스캔 완료. 소요 시간: {elapsedTime:.2f}초")
 
 if __name__=="__main__":

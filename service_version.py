@@ -28,5 +28,5 @@ def get_banner(targetIp, port, timeout=2):
 def scan_service_version(targetIp, port, timeout, maxTries):
     result = scan_syn_port(targetIp, port, timeout, maxTries)
     if result[1] == "Open":
-        return result, get_service_name(port), get_banner(targetIp, port, timeout)
-    return result, None, None
+        return result[0], result[1], get_service_name(port), get_banner(targetIp, port, timeout)
+    return result[0], result[1], None, None
