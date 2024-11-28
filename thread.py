@@ -3,7 +3,7 @@ from ACK.tcp_ack import *
 from SYN.tcp_syn import *
 from NULL.tcp_null import *
 from XMAS.tcp_xmas import *
-from service_version import *
+from VERSION.service_version import *
 
 class Thread:
     def __init__(self,ip:str,port:str,timeout:int,numThread:int,maxTries:int,scanMethod)->None:
