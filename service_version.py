@@ -31,11 +31,16 @@ def get_ssl_banner(targetIp, port, timeout):
     """
     try:
         with socket.create_connection((targetIp, port), timeout) as sock:
+            if port == 443:
+                context = ssl.create_default_context()
+                with context.wrap_socket(sock, server_hostname=targetIp) as sslConn:
+                    sslConn.sendall(b"HEAD / HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n" % targetIp.encode())
+                    banner = sslConn.recv(1024).decode(errors="ignore").strip()
+                    return banner
             # 서비스 응답을 읽음
             sock.sendall(b"HEAD / HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n" % targetIp.encode())  # 간단한 핑 신호 전송
             response = sock.recv(1024).decode(errors="ignore").strip()
             banner = extract_server_header(response)
-
             return banner
     except (socket.timeout, ConnectionRefusedError, OSError):
         return "No Banner"
