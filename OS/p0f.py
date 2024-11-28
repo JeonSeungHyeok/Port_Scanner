@@ -13,8 +13,8 @@ def build_image(tag='p0f', path='/OS'):
         result = subprocess.run(
             ['docker', 'build', '-t', tag, '.'+path],
             check=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             text=True
         )
         print(f"{GREEN}[+]{RESET} Docker image '{YELLOW}{tag}{RESET}' built successfully.")
@@ -31,8 +31,8 @@ def remove_image(tag='p0f'):
         result = subprocess.run(
             ['docker', 'rmi', tag],
             check=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             text=True
         )
         print(f"{GREEN}[+]{RESET} Docker image '{YELLOW}{tag}{RESET}' removed successfully.")
@@ -56,7 +56,7 @@ def run_docker_p0f(log_dir, target_ip):
     
     print(f"{BLUE}[*]{RESET} Ececuting Docker Container {YELLOW}p0f{RESET}")
     try:
-        p0f_proc = subprocess.Popen(docker_command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, universal_newlines=True)
+        p0f_proc = subprocess.Popen(docker_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     except FileNotFoundError:
         print(f"{RED}[-]{RESET} There is no Docker or Not included in {RED}$PATH{RESET}")
         return "Unknown"
@@ -67,7 +67,7 @@ def run_docker_p0f(log_dir, target_ip):
     try:
         time.sleep(2)
         print(f"{BLUE}[*]{RESET} Sending HTTP Request to {YELLOW}{target_ip}{RESET}")
-        subprocess.run(['curl', target_ip], check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        subprocess.run(['curl', target_ip], check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         print(f"{BLUE}[*]{RESET} HTTP Request sended")
         time.sleep(3)
         
@@ -100,11 +100,11 @@ def extract_os_info(log_file_path):
         print(f"{RED}[-]{RESET} Can't find log file: {YELLOW}{log_file_path}{RESET}")
     except Exception as e:
         print(f"{RED}[-]{RESET} Error while reading log file: {e}")
-    if 'Windows' in platform.platform():
-        rmCommand = ['del',f'{log_file_path}']
-    else: 
-        rmCommand = ['rm',f'{log_file_path}']
-    subprocess.run(rmCommand,check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    # if 'Windows' in platform.platform():
+    #     rmCommand = ['del',f'{log_file_path}']
+    # else: 
+    #     rmCommand = ['rm',f'{log_file_path}']
+    # subprocess.run(rmCommand,check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     print(f"{BLUE}[*]{RESET} {YELLOW}{log_file_path}{RESET} deleted")
     
     return os_info
