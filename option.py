@@ -18,8 +18,8 @@ def add_options(parser):
     parser.add_argument('-ox', action='store_true', dest='output_xml', help="Output XML")
 
 def option(options):
-    if options.service_version and options.syn: ##############변경
-        return 'syn'
+    if options.service_version:
+        return 'version'
     elif options.syn:
         return 'syn'
     elif options.ack:

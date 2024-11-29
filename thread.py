@@ -61,8 +61,8 @@ class Thread:
         else:
             for port, state in filteredResults:
                 print(f"Port {port}: {state}")
-                
-        save_result_as_json(filteredResults, self.scanMethod, self.outputFile)  ####### outputFile을 save_result_as_json 함수에 전달
+        if self.outputFile:        
+            save_result_as_json(filteredResults, self.scanMethod, self.outputFile)  ####### outputFile을 save_result_as_json 함수에 전달
     
     
     
