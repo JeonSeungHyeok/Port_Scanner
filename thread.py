@@ -4,16 +4,18 @@ from SYN.tcp_syn import *
 from NULL.tcp_null import *
 from XMAS.tcp_xmas import *
 from VERSION.service_version import *
+from json_handler import * ##################추가
+import time
 
 class Thread:
-    def __init__(self,ip:str,port:str,timeout:int,numThread:int,maxTries:int,scanMethod)->None:
+    def __init__(self,ip:str,port:str,timeout:int,numThread:int,maxTries:int,scanMethod,outputFile: str)->None: ######outputFile: str 추가
         self.ip = ip
         self.port = port
         self.timeout = timeout
         self.numThread = numThread
         self.maxTries = maxTries
         self.scanMethod = scanMethod
-        
+        self.outputFile = outputFile  ####### outputFile을 생성자에서 받아 저장
 
     def parse_ports(self,portInput:list)->set:
         """입력된 포트를 숫자로 변환한 후, 중복 제거하여 오름차순으로 정렬된 포트 번호 리스트를 반환."""
@@ -59,3 +61,9 @@ class Thread:
         else:
             for port, state in filteredResults:
                 print(f"Port {port}: {state}")
+                
+        save_result_as_json(filteredResults, self.scanMethod, self.outputFile)  ####### outputFile을 save_result_as_json 함수에 전달
+    
+    
+    
+

@@ -14,12 +14,12 @@ def add_options(parser):
     parser.add_argument('-t', type=float, default=1, dest='time', help="Response Time")
     parser.add_argument('-M', type=int, default=1, dest='tries', help="Maximum tries")
     parser.add_argument('-OS', action='store_true', dest='os', help="Detection OS")
-    parser.add_argument('-oj', type=str, dest='output_json', help="Output JSON file")  # 수정
-    parser.add_argument('-ox', type=str, dest='output_xml', help="Output XML file")  # 수정
+    parser.add_argument('-oj', type=str, dest='output_json', help="Output JSON file")
+    parser.add_argument('-ox', action='store_true', dest='output_xml', help="Output XML")
 
 def option(options):
-    if options.service_version:
-        return 'version'
+    if options.service_version and options.syn: ##############변경
+        return 'syn'
     elif options.syn:
         return 'syn'
     elif options.ack:
