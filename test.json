@@ -1,0 +1,62 @@
+{
+    "goormrun": {
+        "scanner": "goorm",
+        "start": 1732854585,
+        "host": [
+            {
+                "address": [
+                    {
+                        "addr": "54.180.158.188",
+                        "addrtype": "ipv4"
+                    }
+                ],
+                "ports": {
+                    "port": [
+                        {
+                            "protocol": "tcp",
+                            "portid": "21",
+                            "state": {
+                                "state": "open",
+                                "reason": "syn-ack"
+                            },
+                            "service": {
+                                "name": "*",
+                                "product": "*",
+                                "version": "*",
+                                "cpe": []
+                            }
+                        },
+                        {
+                            "protocol": "tcp",
+                            "portid": "22",
+                            "state": {
+                                "state": "open",
+                                "reason": "syn-ack"
+                            },
+                            "service": {
+                                "name": "*",
+                                "product": "*",
+                                "version": "*",
+                                "cpe": []
+                            }
+                        },
+                        {
+                            "protocol": "tcp",
+                            "portid": "80",
+                            "state": {
+                                "state": "open",
+                                "reason": "syn-ack"
+                            },
+                            "service": {
+                                "name": "*",
+                                "product": "*",
+                                "version": "*",
+                                "cpe": []
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
