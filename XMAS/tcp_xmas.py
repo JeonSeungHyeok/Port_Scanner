@@ -15,4 +15,6 @@ def scan_xmas_port(targetIp, port,timeout,maxTries):
     if response:
         if response.haslayer(TCP) and response[TCP].flags == "R":
             return port, "Closed"
-    return port, "Open or Filtered"
+    else:
+        return port, "Open or Filtered"
+    return "None"
