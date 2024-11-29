@@ -6,6 +6,7 @@ from ACK.tcp_ack import *
 from SYN.tcp_syn import *
 from OS.p0f import *
 from colors import *
+from json_handler import *
 import time
 import os
 
@@ -38,7 +39,7 @@ class Thread:
         ports = self.parse_ports(self.port)
         scanMethods = {
             "syn":scan_syn_port,
-            "ack":scan_port_ack,
+            "ack":scan_ack_port,
             "Null":scan_null_port,
             "Xmas":scan_xmas_port,
             "version":scan_service_version
@@ -63,3 +64,30 @@ class Thread:
         else:
             for port, state in filteredResults:
                 print(f"Port {port}: {state}")
+        #### 밑으로 추가 #############
+        save_result_as_json(filteredResults, self.scanMethod, time.time(), output_prefix="scan_results")
+    
+def save_result_as_json(results, scan_method, start_time, output_prefix="scan_results"):
+    """
+    스캔 결과를 JSON으로 저장하는 함수
+    """
+    # 결과를 JSON 저장 형식으로 변환
+    if scan_method == "version":
+        results_json = [
+            {"port": port, "state": state, "service": service, "banner": banner}
+            for port, state, service, banner in results
+        ]
+    else:
+        results_json = [
+            {"port": port, "state": state} for port, state in results
+        ]
+
+    data = {
+        "scan_method": scan_method,
+        "start_time": start_time,
+        "results": results_json,
+    }
+
+    # JSON 파일로 저장
+    save_to_json(data, prefix=output_prefix)
+    
