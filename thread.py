@@ -11,7 +11,7 @@ import time
 import os
 
 class Thread:
-    def __init__(self,ip:str,port:str,timeout:int,numThread:int,maxTries:int,os:bool,scanMethod)->None:
+    def __init__(self,ip:str,port:str,timeout:int,numThread:int,maxTries:int,os:bool,scanMethod,output_json: bool)->None:
         self.ip = ip
         self.port = port
         self.timeout = timeout
@@ -19,6 +19,7 @@ class Thread:
         self.maxTries = maxTries
         self.os = os
         self.scanMethod = scanMethod
+        self.output_json = output_json
 
     def parse_ports(self,portInput:list)->set:
         ports = set()
@@ -64,8 +65,9 @@ class Thread:
         else:
             for port, state in filteredResults:
                 print(f"Port {port}: {state}")
-        #### 밑으로 추가 #############
-        save_result_as_json(filteredResults, self.scanMethod, time.time(), output_prefix="scan_results")
+        
+        if self.output_json:
+            save_result_as_json(filteredResults, self.scanMethod, time.time(), output_prefix="scan_results")
     
 def save_result_as_json(results, scan_method, start_time, output_prefix="scan_results"):
     """
