@@ -1,5 +1,5 @@
 def usage_msg():
-    return "python3 main.py <ip> [-S] [-A] [-N] [-X] -P PORT [-T THREADS] [-t TIME] [-M TRIES] [-OS] [-oj] [-ox]"
+    return "python3 main.py <ip> [-S] [-A] [-N] [-X] -P PORT [-T THREADS] [-t TIME] [-M TRIES] [-O] [-oj] [-ox]"
 
 def add_options(parser):
     """명령줄 인자를 추가하는 함수"""
@@ -13,9 +13,9 @@ def add_options(parser):
     parser.add_argument('-T', type=int, default=1, dest='threads', help="Specify number of threads (default: 1)")
     parser.add_argument('-t', type=float, default=1, dest='time', help="Response Time")
     parser.add_argument('-M', type=int, default=1, dest='tries', help="Maximum tries")
-    parser.add_argument('-OS', action='store_true', dest='os', help="Detection OS")
-    parser.add_argument('-oj', action='store_true', dest='output_json', help="Output JSON")
-    parser.add_argument('-ox', action='store_true', dest='output_xml', help="Output XML")
+    parser.add_argument('-O', action='store_true', dest='os', help="Detection OS")
+    parser.add_argument('-oj', action='store_true', dest='output_json', help="Output JSON file")
+    parser.add_argument('-ox', action='store_true', dest='output_xml', help="Output XML file")
 
 def option(options):
     if options.service_version:

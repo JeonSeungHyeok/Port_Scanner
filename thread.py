@@ -1,24 +1,27 @@
 from concurrent.futures import ThreadPoolExecutor
-from ACK.tcp_ack import *
-from SYN.tcp_syn import *
+from VERSION.service_version import *
 from NULL.tcp_null import *
 from XMAS.tcp_xmas import *
-from VERSION.service_version import *
+from ACK.tcp_ack import *
+from SYN.tcp_syn import *
+from OS.p0f import *
+from json_handler import *
+from colors import *
 
 class Thread:
-    def __init__(self,ip:str,port:str,timeout:int,numThread:int,maxTries:int,scanMethod)->None:
+    def __init__(self,ip:str,port:str,timeout:int,numThread:int,maxTries:int,os:bool,scanMethod,outputFile:str)->None:
         self.ip = ip
         self.port = port
         self.timeout = timeout
         self.numThread = numThread
         self.maxTries = maxTries
+        self.os = os
         self.scanMethod = scanMethod
+        self.outputFile = outputFile
 
     def parse_ports(self,portInput:list)->set:
-        """입력된 포트를 숫자로 변환한 후, 중복 제거하여 오름차순으로 정렬된 포트 번호 리스트를 반환."""
         ports = set()
-        for part in portInput.split(","):  # 문자열 분리
-            # 포트 범위를 리스트로 변환 후 집합에 추가
+        for part in portInput.split(","):
             if "-" in part:
                 start, end = map(int, part.split("-"))
                 ports.update(range(start, end + 1))
@@ -29,6 +32,10 @@ class Thread:
     def start_thread(self) -> list:
         results=[]
         conf.verb=0
+
+        if self.os: 
+            print(f'{BLUE}[*]{RESET}OS detected : {YELLOW}{run_docker_p0f(os.getcwd(), self.ip)}{RESET}')
+
         ports = self.parse_ports(self.port)
         scanMethods = {
             "syn":scan_syn_port,
@@ -45,16 +52,18 @@ class Thread:
         return results
 
     def print_result(self,results:list)->None:
-        # 결과 정렬 및 출력
         filteredResults = [result for result in results if result[1] == "Unfiltered (RST received)" or result[1]=='Open' or result[1]=="Open or Filtered"]
         filteredResults.sort(key=lambda x: x[0])
 
-        print("\n스캔 결과:")
-        
         if self.scanMethod == "version":
+            print("\n"+" "*38+"Result")
+            print('='*82)
             print(f"{'PORT':<10}{'STATE':<20}{'SERVICE':<20}{'BANNER'}")
             for port, state, service, banner in filteredResults:
                 print(f"Port {port}: {state:<20}{service or 'N/A':<20}{banner or 'N/A'}")
         else:
             for port, state in filteredResults:
                 print(f"Port {port}: {state}")
+        
+        if self.outputFile:        
+            save_result_as_json(filteredResults, self.scanMethod, self.outputFile)
