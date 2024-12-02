@@ -10,7 +10,12 @@ def main():
         options = parser.parse_intermixed_args()
     else:
         options = parser.parse_args()
-    thread = Thread(ip=options.ip,port=options.port,timeout=options.time,numThread=options.threads,maxTries=options.tries,os=options.os,scanMethod=option(options),outputFile=options.output_json)
+
+    thread = Thread(ip=options.ip, port=options.port,
+                    timeout=options.time, numThread=options.threads,
+                    maxTries=options.tries, os=options.os,
+                    scanMethod=option(options),
+                    outputFile=options.output_json)
     
     startTime = time.time()
     result = thread.start_thread()

@@ -1,6 +1,6 @@
 import json
 
-def save_result_as_json(results, scanMethod, outputFile=None):
+def save_result_as_json(results, scanMethod, outputFile):
     """
     스캔 결과를 JSON으로 저장하는 함수
     """
@@ -18,8 +18,6 @@ def save_result_as_json(results, scanMethod, outputFile=None):
         "scanMethod": scanMethod,
         "results": resultsJson
     }
-
-    outputFile = outputFile or "scanResults.json"
     
     with open(outputFile, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4)
