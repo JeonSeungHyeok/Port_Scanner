@@ -1,9 +1,9 @@
 from concurrent.futures import ThreadPoolExecutor
 from VERSION.service_version import *
+from SYN.tcp_syn import *
+from ACK.tcp_ack import *
 from NULL.tcp_null import *
 from XMAS.tcp_xmas import *
-from ACK.tcp_ack import *
-from SYN.tcp_syn import *
 from OS.p0f import *
 from output_handler import *
 from colors import *
@@ -18,7 +18,8 @@ class Thread:
             maxTries: int,
             os: bool,
             scanMethod,
-            outputFile: str
+            outputFile: str,
+            outputXml: str
         )->None:
 
         self.ip = ip
@@ -29,6 +30,7 @@ class Thread:
         self.os = os
         self.scanMethod = scanMethod
         self.outputFile = outputFile
+        self.outputXml = outputXml
 
     def parse_ports(self, portInput: list)->set:  # 포트 범위를 파싱하여 정렬된 포트 목록 반환
         ports = set()
@@ -79,3 +81,5 @@ class Thread:
         
         if self.outputFile:        
             save_result_as_json(filteredResults, self.scanMethod, self.outputFile)
+        if self.outputXml:
+            save_result_as_xml(filteredResults, self.scanMethod, self.outputXml)

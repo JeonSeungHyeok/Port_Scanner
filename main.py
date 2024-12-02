@@ -15,7 +15,8 @@ def main():
                     timeout=options.time, numThread=options.threads,
                     maxTries=options.tries, os=options.os,
                     scanMethod=option(options),
-                    outputFile=options.output_json)
+                    outputFile=options.output_json,
+                    outputXml=options.output_xml)
     
     startTime = time.time()
     result = thread.start_thread()
