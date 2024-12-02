@@ -10,7 +10,7 @@ from json_handler import *
 import os
 
 class Thread:
-    def __init__(self,ip:str,port:str,timeout:int,numThread:int,maxTries:int,os:bool,scanMethod,outputFile: str)->None: # Thread 클래스 초기화 메서드
+    def __init__(self,ip:str,port:str,timeout:int,numThread:int,maxTries:int,os:bool,scanMethod,outputFile: str,outputXml: str)->None: # Thread 클래스 초기화 메서드
         self.ip = ip
         self.port = port
         self.timeout = timeout
@@ -19,6 +19,7 @@ class Thread:
         self.os=os
         self.scanMethod = scanMethod
         self.outputFile = outputFile
+        self.outputXml = outputXml  # XML 출력 옵션 추가
 
     def parse_ports(self,portInput:list)->set:  # 포트 범위를 파싱하여 정렬된 포트 목록 반환
         
@@ -65,3 +66,6 @@ class Thread:
                 print(f"Port {port}: {state}")
         if self.outputFile:        
             save_result_as_json(filteredResults, self.scanMethod, self.outputFile)
+            
+        if self.outputXml:
+            save_result_as_xml(filteredResults, self.scanMethod, self.outputXml)

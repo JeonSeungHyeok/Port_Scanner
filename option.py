@@ -15,8 +15,7 @@ def add_options(parser):
     parser.add_argument('-M', type=int, default=1, dest='tries', help="Maximum tries")
     parser.add_argument('-O', action='store_true', dest='os', help="Detection OS")
     parser.add_argument('-oj', type=str, dest='output_json',nargs='?',const="scanResult.json", help="Output JSON file")
-    parser.add_argument('-ox', action='store_true', dest='output_xml', help="Output XML")
-
+    parser.add_argument('-ox', type=str, dest='output_xml', nargs='?', const="scanResults.xml", help="Output XML file")  # XML 옵션 수정
 def option(options):  # 사용자가 선택한 스캔 옵션을 처리하는 함수
     if options.service_version:
         return 'version'
