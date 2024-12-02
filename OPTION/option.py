@@ -1,5 +1,5 @@
 def usage_msg():
-    return 'python3 main.py <ip> [-sV] [-S] [-A] [-N] [-X] -P PORT [-T THREADS] [-t TIMEOUT] [-M TRIES] [-O] [-oj] [-ox]'
+    return 'python3 main.py <ip> [-S] [-A] [-N] [-X] -P PORT [-T THREADS] [-t TIME] [-M TRIES] [-OS] [-oj] [-ox] [-sV] [-v]'
 
 def add_options(parser):
     """명령줄 인자를 추가하는 함수"""
