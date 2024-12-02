@@ -1,9 +1,6 @@
 import json
 
-def save_result_as_json(results, scanMethod, outputFile=None):  ####### outputFile 파라미터 추가
-    """
-    스캔 결과를 JSON으로 저장하는 함수
-    """
+def save_result_as_json(results, scanMethod, outputFile=None):      # 스캔 결과를 JSON 형식으로 저장하는 함수 정의
     if scanMethod == "version":
         resultsJson = [
             {"port": port, "state": state, "service": service, "banner": banner}
@@ -19,8 +16,8 @@ def save_result_as_json(results, scanMethod, outputFile=None):  ####### outputFi
         "results": resultsJson
     }
 
-    outputFile = outputFile or "scanResults.json"  ####### outputFile이 None일 경우 기본값 설정
+    outputFile = outputFile or "scanResults.json" 
 
-    with open(outputFile, "w", encoding="utf-8") as f:
+    with open(outputFile, "w", encoding="utf-8") as f:      #utf-8로 파일 쓰기
         json.dump(data, f, indent=4)
-    print(f"[INFO] Results saved as JSON to {outputFile}")  ####### 저장된 파일 이름 출력
+    print(f"[INFO] Results saved as JSON to {outputFile}")

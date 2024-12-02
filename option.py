@@ -1,7 +1,7 @@
 def usage_msg():
-    return "python3 main.py <ip> [-S] [-A] [-N] [-X] -P PORT [-T THREADS] [-t TIME] [-M TRIES] [-OS] [-oj] [-ox]"
+    return "python3 main.py <ip> [-sV] [-S] [-A] [-N] [-X] -P PORT [-T THREADS] [-t TIMEOUT] [-M TRIES] [-O] [-oj] [-ox]"
 
-def add_options(parser):
+def add_options(parser): 
     """명령줄 인자를 추가하는 함수"""
     parser.add_argument('-S', action='store_true', dest='syn', help="TCP SYN scan")
     parser.add_argument('-A', action='store_true', dest='ack', help="TCP ACK scan")
@@ -13,11 +13,11 @@ def add_options(parser):
     parser.add_argument('-T', type=int, default=1, dest='threads', help="Specify number of threads (default: 1)")
     parser.add_argument('-t', type=float, default=1, dest='time', help="Response Time")
     parser.add_argument('-M', type=int, default=1, dest='tries', help="Maximum tries")
-    parser.add_argument('-OS', action='store_true', dest='os', help="Detection OS")
-    parser.add_argument('-oj', type=str, dest='output_json', help="Output JSON file")
+    parser.add_argument('-O', action='store_true', dest='os', help="Detection OS")
+    parser.add_argument('-oj', type=str, dest='output_json',nargs='?',const="scanResult.json", help="Output JSON file")
     parser.add_argument('-ox', action='store_true', dest='output_xml', help="Output XML")
 
-def option(options):
+def option(options):  # 사용자가 선택한 스캔 옵션을 처리하는 함수
     if options.service_version:
         return 'version'
     elif options.syn:
