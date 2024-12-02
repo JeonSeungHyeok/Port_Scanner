@@ -1,50 +1,10 @@
 from pathlib import Path
 from colors import *
 import subprocess
-import platform
 import time
-import sys
 import os
 
-
-def build_image(tag='p0f', path='/OS'):
-    try:
-        print(f"{BLUE}[*]{RESET} Building Docker image '{YELLOW}{tag}{RESET}' from '{YELLOW}{os.getcwd()+path}{RESET}'")
-        result = subprocess.run(
-            ['docker', 'build', '-t', tag, '.'+path],
-            check=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            text=True
-        )
-        print(f"{GREEN}[+]{RESET} Docker image '{YELLOW}{tag}{RESET}' built successfully.")
-    except subprocess.CalledProcessError as e:
-        print(f"{RED}[-]{RESET} Error during building Docker image:\n{e.stderr}")
-        sys.exit(e.returncode)
-    except FileNotFoundError:
-        print(f"{RED}[-]{RESET} There is no Docker or Not included in {RED}$PATH{RESET}")
-        sys.exit(1)
-
-def remove_image(tag='p0f'):
-    try:
-        print(f"{BLUE}[*]{RESET} Removing Docker image '{YELLOW}{tag}{RESET}'")
-        result = subprocess.run(
-            ['docker', 'rmi', tag],
-            check=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            text=True
-        )
-        print(f"{GREEN}[+]{RESET} Docker image '{YELLOW}{tag}{RESET}' removed successfully.")
-    except subprocess.CalledProcessError as e:
-        print(f"{RED}[-]{RESET} Error during removing Docker image:\n{e.stderr}")
-        sys.exit(e.returncode)
-    except FileNotFoundError:
-        print(f"{RED}[-]{RESET} There is no Docker or Not included in {RED}$PATH{RESET}")
-        sys.exit(1)
-
 def run_docker_p0f(log_dir, target_ip):
-    build_image()
     log_dir_path = Path(log_dir).resolve()
     log_dir_docker = str(log_dir_path).replace("\\", "/")
     
@@ -81,7 +41,6 @@ def run_docker_p0f(log_dir, target_ip):
             print(f"Docker stderr:\n{stderr}")
     log_file = log_dir_path / 'p0f_output.log'
     os_info = extract_os_info(log_file)
-    remove_image()
     return os_info
 
 def extract_os_info(log_file_path):

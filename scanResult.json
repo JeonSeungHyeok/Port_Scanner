@@ -1,9 +1,0 @@
-{
-    "scanMethod": "syn",
-    "results": [
-        {
-            "port": 80,
-            "state": "Open"
-        }
-    ]
-}

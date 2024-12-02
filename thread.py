@@ -5,7 +5,7 @@ from ACK.tcp_ack import *
 from NULL.tcp_null import *
 from XMAS.tcp_xmas import *
 from OS.p0f import *
-from output_handler import *
+from OUTPUT.output_handler import *
 from colors import *
 
 class Thread:

@@ -16,6 +16,7 @@ def add_options(parser):
     parser.add_argument('-t', dest='time', type=float, default=1, help='Response Time')
     parser.add_argument('-M', dest='tries', type=int, default=1, help='Maximum tries')
     parser.add_argument('-O', dest='os', action='store_true', help='Detection OS')
+    parser.add_argument('-v', dest='cve', action='store_true', help="Search CVE")
     
     parser.add_argument('-oj', dest='output_json', type=str, nargs='?', const='scanResult.json', help='Output JSON file')
     parser.add_argument('-ox', dest='output_xml', type=str, nargs='?', const='scanResult.xml', help='Output XML file')
