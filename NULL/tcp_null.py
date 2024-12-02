@@ -4,9 +4,9 @@ import random
 def scan_null_port(targetIp, port, timeout, maxTries):
     """단일 포트에 대해 TCP Null 스캔 수행"""
     for i in range(maxTries):
-        srcPort = random.randint(10000, 65535)
-        nullPacket = IP(dst=targetIp) / TCP(sport=srcPort, dport=port, flags="")
-        response = sr1(nullPacket, timeout=timeout, verbose=0)
+        srcPort = random.randint(10000, 65535) # 랜덤 소스 포트 설정
+        nullPacket = IP(dst=targetIp) / TCP(sport=srcPort, dport=port, flags='') # Null 패킷 생성
+        response = sr1(nullPacket, timeout=timeout, verbose=0) # 패킷 전송 및 응답 대기
         if response is None:
             continue
         else:
@@ -14,8 +14,8 @@ def scan_null_port(targetIp, port, timeout, maxTries):
 
     # 스캔 결과 
     if response:
-        if response.haslayer(TCP) and response[TCP].flags == "R":
-            return port, "Closed"
+        if response.haslayer(TCP) and response[TCP].flags == 'R':
+            return port, 'Closed'
     else:
-        return port, "Open or Filtered"
-    return "None"
+        return port, 'Open or Filtered'
+    return 'None'
