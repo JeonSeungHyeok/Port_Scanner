@@ -100,11 +100,7 @@ def extract_os_info(log_file_path):
         print(f"{RED}[-]{RESET} Can't find log file: {YELLOW}{log_file_path}{RESET}")
     except Exception as e:
         print(f"{RED}[-]{RESET} Error while reading log file: {e}")
-    if 'Windows' in platform.platform():
-        rmCommand = ['del',f'{log_file_path}']
-    else: 
-        rmCommand = ['rm',f'{log_file_path}']
-    subprocess.run(rmCommand,check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    os.remove(log_file_path)
     print(f"{BLUE}[*]{RESET} {YELLOW}{log_file_path}{RESET} deleted")
     
     return os_info

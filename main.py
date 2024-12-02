@@ -1,7 +1,6 @@
 from option import *
 from thread import *
 import argparse
-import sys
 import time
 
 def main():
