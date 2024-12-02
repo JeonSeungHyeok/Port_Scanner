@@ -6,10 +6,11 @@ from ACK.tcp_ack import *
 from SYN.tcp_syn import *
 from OS.p0f import *
 from colors import *
+from json_handler import *
 import os
 
 class Thread:
-    def __init__(self,ip:str,port:str,timeout:int,numThread:int,maxTries:int,os:bool,scanMethod)->None:
+    def __init__(self,ip:str,port:str,timeout:int,numThread:int,maxTries:int,os:bool,scanMethod,outputFile: str)->None:
         self.ip = ip
         self.port = port
         self.timeout = timeout
@@ -17,6 +18,7 @@ class Thread:
         self.maxTries = maxTries
         self.os=os
         self.scanMethod = scanMethod
+        self.outputFile = outputFile
 
     def parse_ports(self,portInput:list)->set:
         
@@ -61,3 +63,5 @@ class Thread:
         else:
             for port, state in filteredResults:
                 print(f"Port {port}: {state}")
+        if self.outputFile:        
+            save_result_as_json(filteredResults, self.scanMethod, self.outputFile)
