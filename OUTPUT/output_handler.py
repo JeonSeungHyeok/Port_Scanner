@@ -23,8 +23,8 @@ def save_result_as_json(results, scanMethod, outputFile):
         json.dump(data, f, indent=4)
     print(f'{GREEN}[INFO]{RESET} Results saved as JSON to {YELLOW}{outputFile}{RESET}')  
     
-def save_result_as_xml(results, scanMethod, outputFile):
-    # 루트 엘리먼트 생성
+def save_result_as_xml(results, scanMethod, outputFile):  # 루트 엘리먼트 생성
+    """스캔 결과를 XML로 저장하는 함수"""
     root = ET.Element('ScanResults', scanMethod=scanMethod)
 
     # 결과 데이터를 XML로 추가

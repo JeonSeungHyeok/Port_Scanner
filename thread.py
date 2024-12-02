@@ -5,6 +5,7 @@ from ACK.tcp_ack import *
 from NULL.tcp_null import *
 from XMAS.tcp_xmas import *
 from OS.p0f import *
+from CVE.shodan import *
 from OUTPUT.output_handler import *
 from colors import *
 
@@ -18,10 +19,10 @@ class Thread:
             maxTries: int,
             os: bool,
             scanMethod,
+            cve: bool,
             outputFile: str,
             outputXml: str
         )->None:
-
         self.ip = ip
         self.port = port
         self.timeout = timeout
@@ -29,6 +30,7 @@ class Thread:
         self.maxTries = maxTries
         self.os = os
         self.scanMethod = scanMethod
+        self.cve = cve
         self.outputFile = outputFile
         self.outputXml = outputXml
 
@@ -44,10 +46,10 @@ class Thread:
 
     def start_thread(self) -> list:     #멀티 스레드를 실행하여 스캔 시작
         results=[]
-        conf.verb=0
+        conf.verb = 0
 
         if self.os: 
-            print(f'{BLUE}[*]{RESET}OS detected : {YELLOW}{run_docker_p0f(os.getcwd(), self.ip)}{RESET}')
+            print(f'{BLUE}[*]{RESET}OS detected: {YELLOW}{run_docker_p0f(os.getcwd(), self.ip)}{RESET}')
 
         ports = self.parse_ports(self.port)
         scanMethods = {
@@ -67,6 +69,7 @@ class Thread:
     def print_result(self, results: list)->None:      # 스캔 결과를 출력하는 메서드
         filteredResults = [result for result in results if result[1] == 'Unfiltered (RST received)' or result[1]=='Open' or result[1]=='Open or Filtered']
         filteredResults.sort(key=lambda x: x[0])
+        print(f"\n{self.scanMethod.upper()} Scan Result:")
 
         if self.scanMethod == 'version':
             print(f"\n{'Result':^82}")
@@ -75,9 +78,13 @@ class Thread:
             print(f"{'PORT':<10}{'STATE':<20}{'SERVICE':<20}{'BANNER'}")
             for port, state, service, banner in filteredResults:
                 print(f"Port {port}: {state:<20}{service or 'N/A':<20}{banner or 'N/A'}")
+                if self.cve:
+                    print(f'CVE List at Port {port} : {shodan_api(self.ip, port, self.timeout, self.maxTries).process()}')
         else:
             for port, state in filteredResults:
                 print(f'Port {port}: {state}')
+            for port, state in filteredResults:
+                print(f'CVE List at Port {port} : {shodan_api(self.ip, port, self.timeout, self.maxTries).process()}')
         
         if self.outputFile:        
             save_result_as_json(filteredResults, self.scanMethod, self.outputFile)
