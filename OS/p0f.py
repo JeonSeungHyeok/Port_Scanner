@@ -44,7 +44,7 @@ def remove_image(tag='p0f'):
         sys.exit(1)
 
 def run_docker_p0f(log_dir, target_ip):
-    #build_image()
+    build_image()
     log_dir_path = Path(log_dir).resolve()
     log_dir_docker = str(log_dir_path).replace("\\", "/")
     
@@ -81,7 +81,7 @@ def run_docker_p0f(log_dir, target_ip):
             print(f"Docker stderr:\n{stderr}")
     log_file = log_dir_path / 'p0f_output.log'
     os_info = extract_os_info(log_file)
-    #remove_image()
+    remove_image()
     return os_info
 
 def extract_os_info(log_file_path):
