@@ -4,9 +4,9 @@ import argparse
 import time
 
 def main():
-    parser = argparse.ArgumentParser(usage=usage_msg())
+    parser = argparse.ArgumentParser(usage=usage_msg())     #명령줄 파서 생성
     add_options(parser)
-    if hasattr(parser, 'parse_intermixed_args'):
+    if hasattr(parser, 'parse_intermixed_args'):        # 파서가 parse_intermixed_args 메서드를 지원하는지 확인
         options = parser.parse_intermixed_args()
     else:
         options = parser.parse_args()

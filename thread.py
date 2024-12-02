@@ -5,11 +5,11 @@ from XMAS.tcp_xmas import *
 from ACK.tcp_ack import *
 from SYN.tcp_syn import *
 from OS.p0f import *
-from json_handler import *
+from output_handler import *
 from colors import *
 
 class Thread:
-    def __init__(
+    def __init__( # Thread 클래스 초기화 메서드
             self,
             ip: str,
             port: str,
@@ -30,7 +30,7 @@ class Thread:
         self.scanMethod = scanMethod
         self.outputFile = outputFile
 
-    def parse_ports(self, portInput: list)->set:
+    def parse_ports(self, portInput: list)->set:  # 포트 범위를 파싱하여 정렬된 포트 목록 반환
         ports = set()
         for part in portInput.split(','):
             if '-' in part:
@@ -40,7 +40,7 @@ class Thread:
                 ports.add(int(part.strip()))
         return sorted(ports)
 
-    def start_thread(self) -> list:
+    def start_thread(self) -> list:     #멀티 스레드를 실행하여 스캔 시작
         results=[]
         conf.verb=0
 
@@ -62,17 +62,17 @@ class Thread:
                 results.append(future.result())
         return results
 
-    def print_result(self, results: list)->None:
+    def print_result(self, results: list)->None:      # 스캔 결과를 출력하는 메서드
         filteredResults = [result for result in results if result[1] == 'Unfiltered (RST received)' or result[1]=='Open' or result[1]=='Open or Filtered']
         filteredResults.sort(key=lambda x: x[0])
 
         if self.scanMethod == 'version':
-            print(f'\n{'Result':^82}')
+            print(f"\n{'Result':^82}")
 
             print('='*82)
-            print(f'{'PORT':<10}{'STATE':<20}{'SERVICE':<20}{'BANNER'}')
+            print(f"{'PORT':<10}{'STATE':<20}{'SERVICE':<20}{'BANNER'}")
             for port, state, service, banner in filteredResults:
-                print(f'Port {port}: {state:<20}{service or 'N/A':<20}{banner or 'N/A'}')
+                print(f"Port {port}: {state:<20}{service or 'N/A':<20}{banner or 'N/A'}")
         else:
             for port, state in filteredResults:
                 print(f'Port {port}: {state}')

@@ -13,6 +13,7 @@ def scan_ack_port(targetIp, port, timeout,maxTries):
         else:
             break
 
+    # 스캔 결과
     if response is None:
         return port, "Filtered"
     elif response.haslayer(TCP) and response[TCP].flags == "R":

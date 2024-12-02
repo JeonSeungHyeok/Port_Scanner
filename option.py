@@ -20,7 +20,7 @@ def add_options(parser):
     parser.add_argument('-oj', dest='output_json', type=str, nargs='?', const='scanResult.json', help='Output JSON file')
     parser.add_argument('-ox', dest='output_xml', type=str, nargs='?', const='scanResult.xml', help='Output XML file')
 
-def option(options):
+def option(options):  # 사용자가 선택한 스캔 옵션을 처리하는 함수
     if options.service_version:
         return 'version'
     elif options.syn:

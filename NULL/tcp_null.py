@@ -12,6 +12,7 @@ def scan_null_port(targetIp, port, timeout, maxTries):
         else:
             break
 
+    # 스캔 결과 
     if response:
         if response.haslayer(TCP) and response[TCP].flags == "R":
             return port, "Closed"
