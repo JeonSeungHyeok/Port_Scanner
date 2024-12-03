@@ -5,53 +5,54 @@ import time
 import sys
 import os
 
-def run_docker_p0f(log_dir, target_ip):
-    log_dir_path = Path(log_dir).resolve()
-    log_dir_docker = str(log_dir_path).replace("\\", "/")
+def run_docker_p0f(logDir, targetIp):
+    logDirPath = Path(logDir).resolve()
+    logDirDocker = str(logDirPath).replace('\\', '/')
     
     docker_command = [
         'docker', 'run', '--rm', '--cap-add=NET_ADMIN',
-        '-v', f'{log_dir_docker}:/var/log/p0f',
-        'p0f',target_ip
+        '-v', f'{logDirDocker}:/var/log/p0f',
+        'p0f',targetIp
     ]
     
-    print(f"{BLUE}[*]{RESET} Excuting  Docker Container {YELLOW}p0f{RESET} for {YELLOW}{target_ip}{RESET}")
-    try:
-        p0f_proc = subprocess.Popen(docker_command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, universal_newlines=True)
+    print(f'{BLUE}[*]{RESET} Executing  Docker Container {YELLOW}p0f{RESET} for {YELLOW}{targetIp}{RESET}')
+    
+    try:  # 도커 실행
+        subprocess.Popen(docker_command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, universal_newlines=True)
     except FileNotFoundError:
-        print(f"{RED}[-]{RESET} There is no Docker or Not included in {RED}$PATH{RESET}")
-        return "Unknown"
+        print(f'{RED}[-]{RESET} There is no Docker or Not included in {RED}$PATH{RESET}')
+        return 'Unknown'
     except Exception as e:
-        print(f"{RED}[-]{RESET} Error while ececuting Docker Container: {e}")
-        return "Unknown"
+        print(f'{RED}[-]{RESET} Error while ececuting Docker Container: {e}')
+        return 'Unknown'
     time.sleep(3)
     #max_retries = 3
     #for attempt in range(max_retries):
     #    try:
-    #        subprocess.run(['curl', f'{target_ip}:80'], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    #        print(f"{BLUE}[*]{RESET} HTTP Request sent successfully to {YELLOW}{target_ip}{RESET}")
+    #        subprocess.run(['curl', f'{targetIp}:80'], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    #        print(f'{BLUE}[*]{RESET} HTTP Request sent successfully to {YELLOW}{targetIp}{RESET}')
     #        break
     #    except subprocess.CalledProcessError as e:
     #        if attempt < max_retries - 1:
-    #            print(f"{RED}[-]{RESET} Retry {attempt + 1}/{max_retries}")
+    #            print(f'{RED}[-]{RESET} Retry {attempt + 1}/{max_retries}')
     #            time.sleep(2)
     #        else:
-    #            print(f"{RED}[-]{RESET} HTTP Request failed: {e}")
+    #            print(f'{RED}[-]{RESET} HTTP Request failed: {e}')
     #    finally:
-    #        stdout, stderr = p0f_proc.communicate(timeout=10)
+    #        stdout, stderr = p0fProc.communicate(timeout=10)
     #        if stdout:
-    #            print(f"Docker stdout:\n{stdout}")
+    #            print(f'Docker stdout:\n{stdout}')
     #        if stderr:
-    #            print(f"Docker stderr:\n{stderr}")
-    log_file = log_dir_path / f'{target_ip}_p0f_output.log'
-    osInfo = extract_os_info(log_file)
-    return dict(ip=target_ip,OS=osInfo)
+    #            print(f'Docker stderr:\n{stderr}')
+    logFile = logDirPath / f'{targetIp}_p0f_output.log'
+    osInfo = extract_os_info(logFile)
+    return dict(ip=targetIp, OS=osInfo)
 
-def extract_os_info(log_file_path):
-    osInfo = "Unknown"
+def extract_os_info(logFilePath):
+    osInfo = 'Unknown'
     try:
-        with open(log_file_path, 'r') as log_file:
-            lines = log_file.readlines()
+        with open(logFilePath, 'r') as logFile:
+            lines = logFile.readlines()
             count = 0
             for line in lines:
                 if '|os' in line:
@@ -60,14 +61,14 @@ def extract_os_info(log_file_path):
                         osInfo = line.split('=')[5].strip().split('|')[0]
                         break
     except FileNotFoundError:
-        print(f"{RED}[-]{RESET} Can't find log file: {YELLOW}{log_file_path}{RESET}")
+        print(f"{RED}[-]{RESET} Can't find log file: {YELLOW}{logFilePath}{RESET}")
     except Exception as e:
-        print(f"{RED}[-]{RESET} Error while reading log file: {e}")
+        print(f'{RED}[-]{RESET} Error while reading log file: {e}')
     try:
-        os.remove(log_file_path)
-        print(f"{BLUE}[*]{RESET} {YELLOW}{log_file_path}{RESET} deleted")
+        os.remove(logFilePath)
+        print(f'{BLUE}[*]{RESET} {YELLOW}{logFilePath}{RESET} deleted')
     except FileNotFoundError:
-        print(f"{RED}[-]{RESET} Can't delete log file: {YELLOW}{log_file_path}{RESET}")
+        print(f"{RED}[-]{RESET} Can't delete log file: {YELLOW}{logFilePath}{RESET}")
     
     return osInfo
 
