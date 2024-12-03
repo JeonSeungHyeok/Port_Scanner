@@ -18,23 +18,32 @@ class shodan_api:
         self.cpe = None
         self.cve = None
 
-    def shodan_api_cpe(self):
+    def shodan_api_cpe(self, keywords):
         baseUrl = 'https://cvedb.shodan.io/cpes'
         query = {'product':self.product}
         response = requests.get(baseUrl, params=query)
-        return self.parse_cpe(response)
+        return self.parse_cpe(response, keywords)
 
-    def parse_cpe(self, response):
-        cpes = [v for v in json.loads(response.text).values()][0]
+    def parse_cpe(self, response, keywords):
+        try:
+            cpes = [v for v in json.loads(response.text).values()][0]
+        except (KeyError, IndexError):
+            cpes = []
+        nist_cpes = self.nist_cpe(self.product, self.ver, keywords)
+        if isinstance(nist_cpes, list): 
+            try:
+                cpes.extend(nist_cpes)
+            except AttributeError:
+                pass
         for cpe in cpes:
             if self.ver in cpe:
-                self.cpe = cpe
-                break
-        if self.cpe == None:
-            self.nist_cpe(self.product, self.ver)
+                for keyword in keywords:
+                    if keyword in cpe:
+                        self.cpe = cpe
+                        break
         return self.shodan_api_cve()
 
-    def nist_cpe(self, app: str, ver: str, form=2.3) -> None:
+    def nist_cpe(self, app: str, ver: str, keywords: list, form=2.3) -> None:
         vendor = 'https://nvd.nist.gov/products/cpe/search/results'
         query = {'namingFormat':form,'keyword':f'{app} {ver}'}
         response = requests.get(vendor, params=query)
@@ -43,7 +52,11 @@ class shodan_api:
         for link in cpeLinks:
             cpe = link.text.strip()
             if cpe.startswith('cpe:'):
-                self.cpe = cpe
+                for keyword in keywords:
+                    if keyword in cpe:
+                        return [cpe]
+        return []
+        
         
 #    def nist_cve_result(self):
 #        baseUrl = 'https://services.nvd.nist.gov/rest/json/cves/2.0'
@@ -80,16 +93,38 @@ class shodan_api:
         except Exception as e:
             return []
 
-    def extract_version(self):
-        try:
-            match = re.search(r'\d+(\.\d+)+', self.banner)
-            if match:
-                return match.group(0)
-        except TypeError as e:
-            pass
-        return ''
+    def extract_version(self,keywords):
+        if "openssh" in keywords:
+            self.product='openssh'
+            pattern = r'_([^ ]+)'
+            return re.findall(pattern, self.banner)[0]
+        elif "apache" in keywords:
+            self.product='apache'
+            try:
+                match = re.search(r'\d+(\.\d+)+', self.banner)
+                if match:
+                    return match.group(0)
+            except TypeError as e:
+                pass
+            return ''
+        else:
+            try:
+                match = re.search(r'\d+(\.\d+)+', self.banner)
+                if match:
+                    return match.group(0)
+            except TypeError as e:
+                pass
+            return ''
 
-    def process(self):
-        self.result1, self.result2, self.product, self.banner = scan_service_version(self.ip, self.port, self.timeout, self.maxTries)
-        self.ver = self.extract_version()
-        return self.shodan_api_cpe()
+    def parse_strings(self, banner):
+        result = []
+        if isinstance(banner, str):
+            banner = banner.splitlines()
+
+        for line in banner:
+            cleaned_line = re.sub(r'[^\w\s]', ' ', line)
+            cleaned_line = re.sub(r'_', ' ', cleaned_line)
+            words = cleaned_line.split()
+            filtered_words = [word.lower() for word in words if not word.isdigit()]
+            result.extend(filtered_words)
+        return result
