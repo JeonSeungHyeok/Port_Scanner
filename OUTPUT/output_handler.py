@@ -21,17 +21,18 @@ def save_result_as_json(results, scanMethod, outputFile, os_info=None, port_cve_
                 'state': state,
                 'service': service,
                 'banner': banner,
-                'cve_list': port_cve_list.get(port, []) if port_cve_list else None
+                **({'cve_list': cve_list} if port_cve_list else {})  # cve_list 추가 조건
             }
-            for port, state, service, banner in filteredResults
+            for port, state, service, banner, *cve_list in filteredResults
         ]
     else:  # SYN 스캔 또는 다른 스캔 옵션의 경우
         resultsJson = [
             {
                 'port': port,
-                'state': state
+                'state': state,
+                **({'cve_list': cve_list} if port_cve_list else {})  # cve_list 추가 조건
             }
-            for port, state in filteredResults
+            for port, state, *cve_list in filteredResults
         ]
 
     data = {

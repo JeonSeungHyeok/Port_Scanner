@@ -80,11 +80,8 @@ class Thread:
         - filtered 및 closed 상태를 제외하고 출력
         - 스캔 방식에 따라 출력 형식 변경
         """
-        filteredResults = [
-            result for result in results
-            if result[1].lower() not in ['filtered', 'closed']
-        ]
-        filteredResults.sort(key=lambda x: x[0])  # 포트를 기준으로 정렬
+        filteredResults = [result for result in results if result[1] == 'Unfiltered (RST received)' or result[1]=='Open' or result[1]=='Open or Filtered']
+        filteredResults.sort(key=lambda x: x[0])   
 
         print(f"\n{self.scanMethod.upper()} Scan Result:")
         print(f"{'=' * 82}")
@@ -93,8 +90,8 @@ class Thread:
             for port, state, service, banner in filteredResults:
                 print(f"Port {port}: {state:<20}{service or 'N/A':<20}{banner or 'N/A'}")
                 cve_list = port_cve_list.get(port, [])
-                print(f"CVE List at Port {port}: {cve_list}")
+                print(f"CVE List at Port {port}: {cve_list}")    
         else:  # -S (SYN 스캔) 옵션
             print(f"{'PORT':<10}{'STATE':<20}")
             for port, state in filteredResults:
-                print(f"Port {port}: {state}")
+                print(f"Port {port}: {state}")                
