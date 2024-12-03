@@ -1,0 +1,17 @@
+{
+    "scanMethod": "syn",
+    "results": [
+        {
+            "port": 21,
+            "state": "Open"
+        },
+        {
+            "port": 22,
+            "state": "Open"
+        },
+        {
+            "port": 80,
+            "state": "Open"
+        }
+    ]
+}

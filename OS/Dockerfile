@@ -1,16 +1,17 @@
-FROM ubuntu:20.04
+FROM debian:latest
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update && \
-    apt-get install -y p0f curl && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN mkdir -p /var/log/p0f
-
-WORKDIR /usr/local/bin
+RUN apt update && apt install -y \
+    p0f \
+    curl \
+    dos2unix \
+    && apt clean
 
 COPY run_p0f.sh /usr/local/bin/run_p0f.sh
+
+RUN dos2unix /usr/local/bin/run_p0f.sh
+
 RUN chmod +x /usr/local/bin/run_p0f.sh
+
+WORKDIR /usr/local/bin
 
 ENTRYPOINT ["./run_p0f.sh"]
