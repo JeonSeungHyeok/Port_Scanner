@@ -1,71 +1,100 @@
 from concurrent.futures import ThreadPoolExecutor
-from service_version import *
+from VERSION.service_version import *
+from SYN.tcp_syn import *
+from ACK.tcp_ack import *
 from NULL.tcp_null import *
 from XMAS.tcp_xmas import *
-from ACK.tcp_ack import *
-from SYN.tcp_syn import *
 from OS.p0f import *
+from CVE.shodan import *
+from OUTPUT.output_handler import *
 from colors import *
-from json_handler import *
-import os
 
 class Thread:
-    def __init__(self,ip:str,port:str,timeout:int,numThread:int,maxTries:int,os:bool,scanMethod,outputFile: str,outputXml: str)->None: # Thread 클래스 초기화 메서드
+    def __init__(self, ip, port, timeout, numThread, maxTries, os, scanMethod, cve, outputFile, outputXml):
         self.ip = ip
         self.port = port
         self.timeout = timeout
         self.numThread = numThread
         self.maxTries = maxTries
-        self.os=os
+        self.os = os
         self.scanMethod = scanMethod
+        self.cve = cve
         self.outputFile = outputFile
-        self.outputXml = outputXml  # XML 출력 옵션 추가
+        self.outputXml = outputXml
 
-    def parse_ports(self,portInput:list)->set:  # 포트 범위를 파싱하여 정렬된 포트 목록 반환
-        
+    def parse_ports(self, portInput):
         ports = set()
-        for part in portInput.split(","):
-            if "-" in part:
-                start, end = map(int, part.split("-"))
+        for part in portInput.split(','):
+            if '-' in part:
+                start, end = map(int, part.split('-'))
                 ports.update(range(start, end + 1))
             else:
                 ports.add(int(part.strip()))
         return sorted(ports)
 
-    def start_thread(self) -> list:     #멀티 스레드를 실행하여 스캔 시작
-        results=[]
-        conf.verb=0
-        if self.os: 
-            print(f'{BLUE}[*]{RESET}OS detected : {YELLOW}{run_docker_p0f(os.getcwd(), self.ip)}{RESET}')
+    def start_thread(self):
+        results = []
+        conf.verb = 0
+
+        os_info = None
+        if self.os:
+            os_info = run_docker_p0f(os.getcwd(), self.ip)
+            print(f'{BLUE}[*]{RESET}OS detected: {YELLOW}{os_info}{RESET}')
+
         ports = self.parse_ports(self.port)
         scanMethods = {
-            "syn":scan_syn_port,
-            "ack":scan_ack_port,
-            "Null":scan_null_port,
-            "Xmas":scan_xmas_port,
-            "version":scan_service_version
+            'syn': scan_syn_port,
+            'ack': scan_ack_port,
+            'Null': scan_null_port,
+            'Xmas': scan_xmas_port,
+            'version': scan_service_version
         }
-        scanFunction = scanMethods.get(self.scanMethod)
-        with ThreadPoolExecutor(max_workers=self.numThread,) as executor:
-            futures = [executor.submit(scanFunction, self.ip, port, self.timeout,self.maxTries) for port in ports]
+
+        scan_func = scanMethods.get(self.scanMethod)
+        if not scan_func:
+            raise ValueError(f"Invalid scan method: {self.scanMethod}")
+
+        with ThreadPoolExecutor(max_workers=self.numThread) as executor:
+            futures = [executor.submit(scan_func, self.ip, port, self.timeout, self.maxTries) for port in ports]
             for future in futures:
                 results.append(future.result())
-        return results
 
-    def print_result(self,results:list)->None:      # 스캔 결과를 출력하는 메서드
-        filteredResults = [result for result in results if result[1] == "Unfiltered (RST received)" or result[1]=='Open' or result[1]=="Open or Filtered"]
-        filteredResults.sort(key=lambda x: x[0])
-        print(f"\n{self.scanMethod.upper()} 스캔 결과:")
-        
-        if self.scanMethod == "version":
+        port_cve_list = {}
+        if self.cve:
+            for port, state, *_ in results:
+                if state.lower() not in ['filtered', 'closed']:
+                    cve_data = shodan_api(self.ip, port, self.timeout, self.maxTries).process()
+                    port_cve_list[port] = cve_data if cve_data else []
+
+        if self.outputFile:
+            save_result_as_json(results, self.scanMethod, self.outputFile, os_info=os_info, port_cve_list=port_cve_list)
+
+        if self.outputXml:
+            save_result_as_xml(results, self.scanMethod, self.outputXml, os_info=os_info, port_cve_list=port_cve_list)
+
+        return results, port_cve_list
+
+    def print_result(self, results, port_cve_list):
+        """
+        스캔 결과를 출력하는 메서드
+        - filtered 및 closed 상태를 제외하고 출력
+        - 스캔 방식에 따라 출력 형식 변경
+        """
+        filteredResults = [
+            result for result in results
+            if result[1].lower() not in ['filtered', 'closed']
+        ]
+        filteredResults.sort(key=lambda x: x[0])  # 포트를 기준으로 정렬
+
+        print(f"\n{self.scanMethod.upper()} Scan Result:")
+        print(f"{'=' * 82}")
+        if self.scanMethod == 'version':  # -sV 옵션
             print(f"{'PORT':<10}{'STATE':<20}{'SERVICE':<20}{'BANNER'}")
             for port, state, service, banner in filteredResults:
                 print(f"Port {port}: {state:<20}{service or 'N/A':<20}{banner or 'N/A'}")
-        else:
+                cve_list = port_cve_list.get(port, [])
+                print(f"CVE List at Port {port}: {cve_list}")
+        else:  # -S (SYN 스캔) 옵션
+            print(f"{'PORT':<10}{'STATE':<20}")
             for port, state in filteredResults:
                 print(f"Port {port}: {state}")
-        if self.outputFile:        
-            save_result_as_json(filteredResults, self.scanMethod, self.outputFile)
-            
-        if self.outputXml:
-            save_result_as_xml(filteredResults, self.scanMethod, self.outputXml)
