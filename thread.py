@@ -78,13 +78,13 @@ class Thread:
             print(f"{'PORT':<10}{'STATE':<20}{'SERVICE':<20}{'BANNER'}")
             for port, state, service, banner in filteredResults:
                 print(f"Port {port}: {state:<20}{service or 'N/A':<20}{banner or 'N/A'}")
-                if self.cve:
-                    print(f'CVE List at Port {port} : {shodan_api(self.ip, port, self.timeout, self.maxTries).process()}')
+
         else:
             for port, state in filteredResults:
                 print(f'Port {port}: {state}')
-            if self.cve:
-                print(f'CVE List at Port {port} : {shodan_api(self.ip, port, self.timeout, self.maxTries).process()}')
+
+        if self.cve:
+            print(f'CVE List at Port {port} : {shodan_api(self.ip, port, self.timeout, self.maxTries).process()}')
         
         if self.outputFile:        
             save_result_as_json(filteredResults, self.scanMethod, self.outputFile)
