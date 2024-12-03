@@ -15,15 +15,17 @@ def run_test(command):
 
 def main():
     ip = "54.180.158.188"
+    
     test_cases = [
-        f"python main.py {ip} -P 20-50,80 -S -T 10",
-        f"python main.py {ip} -P 20-50,80 -A -T 10",
-        f"python main.py {ip} -P 20-50,80 -X -T 10",
-        f"python main.py {ip} -P 20-50,80 -N -T 10",
-        f"python main.py {ip} -P 20-50,80 -sV -T 10",
-        f"python main.py {ip} -P 20-50,80 -S -v -T 10",
-        f"python main.py {ip} -P 20-50,80 -S -v -T 10 -oj result.json",
-        f"python main.py {ip} -P 20-50,80 -S -v -T 10 -ox result.xml"
+        f"python main.py {ip} -P 20-50,80 -S -T 10 -t 0.1",
+        f"python main.py {ip} -P 20-50,80 -A -T 10 -t 0.1",
+        f"python main.py {ip} -P 20-50,80 -X -T 10 -t 0.1",
+        f"python main.py {ip} -P 20-50,80 -N -T 10 -t 0.1",
+        f"python main.py {ip} -P 20-50,80 -sV -T 10 -t 0.1",
+        f"python main.py {ip} -P 20-50,80 -S -v -T 10 -t 0.1",
+        f"python main.py {ip} -P 20-50,80 -S -v -T 10 -t 0.1 -oj result.json",
+        f"python main.py {ip} -P 20-50,80 -S -v -T 10 -t 0.1 -ox result.xml"
+        f"python main.py {ip} -P 20-50,80 -S -v -O -T 10 -t 0.1 -oj result.json"
     ]
 
     for command in test_cases:
