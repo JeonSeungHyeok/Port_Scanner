@@ -34,15 +34,16 @@ class Thread:
         self.outputFile = outputFile
         self.outputXml = outputXml
 
-    def parse_ports(self, portInput: list)->set:  # 포트 범위를 파싱하여 정렬된 포트 목록 반환
-        ports = set()
+    def parse_ports(self, portInput: str) -> list:  # 포트 범위를 파싱하여 섞인 포트 목록 반환
+        ports = []
         for part in portInput.split(','):
             if '-' in part:
                 start, end = map(int, part.split('-'))
-                ports.update(range(start, end + 1))
+                ports.extend(range(start, end + 1))  # range 결과를 리스트에 추가
             else:
-                ports.add(int(part.strip()))
-        return sorted(ports)
+                ports.append(int(part.strip()))  # 개별 포트를 리스트에 추가
+                
+        return random.shuffle(ports)  # shuffle을 통해 보안 시스템의 연속적인 포트 스캔 탐지를 우회
 
     def start_thread(self) -> list:     #멀티 스레드를 실행하여 스캔 시작
         results=[]
