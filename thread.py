@@ -37,6 +37,13 @@ class Thread:
 
 
     def ip_range_to_list(self, ip):
+        if ',' in ip:
+            ipList = []
+            ipListTmp = ip.split(',')
+            for ips in ipListTmp:
+                funcedIp = self.ip_range_to_list(ips)
+                ipList.extend(funcedIp)
+            return ipList
         if '-' in ip:
             try:
                 start_ip_str, end_ip_str = ip.split('-')
@@ -53,15 +60,8 @@ class Thread:
                 print(f"Error: {e}")
                 return []
         elif '/' in ip:
-            net4 = ipaddress.ip_network(ip)
-            ipList = [x for x in net4.hosts()]
-            return ipList
-        elif ',' in ip:
-            ipList = []
-            ipListTmp = ip.split(',')
-            for ips in ipListTmp:
-                funcedIp = self.ip_range_to_list(ips)
-                ipList.extend(funcedIp)
+            net4 = ipaddress.ip_network(ip)  
+            ipList = [str(x) for x in net4.hosts()]
             return ipList
         else:
             return [str(ipaddress.IPv4Address(ip))]
