@@ -2,7 +2,7 @@ import json
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 from colors import *
-def save_result_as_json(results, scanMethod, outputFile):
+def save_result_as_json(ip, results, scanMethod, outputFile):
     """스캔 결과를 JSON으로 저장하는 함수"""
     if scanMethod == 'version': # -sV 옵션 사용 시 service, banner 출력
         resultsJson = [
@@ -19,11 +19,11 @@ def save_result_as_json(results, scanMethod, outputFile):
         'results': resultsJson
     }
 
-    with open(outputFile, 'w', encoding='utf-8') as f:  # utf-8로 파일 쓰기
+    with open(f'{ip}_{outputFile}', 'w', encoding='utf-8') as f:  # utf-8로 파일 쓰기
         json.dump(data, f, indent=4)
     print(f'{GREEN}[INFO]{RESET} Results saved as JSON to {YELLOW}{outputFile}{RESET}')  
     
-def save_result_as_xml(results, scanMethod, outputFile):  # 루트 엘리먼트 생성
+def save_result_as_xml(ip, results, scanMethod, outputFile):  # 루트 엘리먼트 생성
     """스캔 결과를 XML로 저장하는 함수"""
     root = ET.Element('ScanResults', scanMethod=scanMethod)
 
@@ -43,7 +43,7 @@ def save_result_as_xml(results, scanMethod, outputFile):  # 루트 엘리먼트 
     pretty_xml = reparsed.toprettyxml(indent='    ')
 
     # XML 파일 저장
-    with open(outputFile, 'w', encoding='utf-8') as f:
+    with open(f'{ip}_{outputFile}', 'w', encoding='utf-8') as f:
         f.write(pretty_xml)
     print(f'{GREEN}[INFO]{RESET} Results saved as XML to {YELLOW}{outputFile}{RESET}')
     
