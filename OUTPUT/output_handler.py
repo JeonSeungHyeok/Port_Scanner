@@ -9,11 +9,6 @@ def save_result_as_json(results, scanMethod, outputFile, os_info=None, port_cve_
     - filtered 및 closed 상태를 제외
     - scanMethod에 따라 결과 필드 조정
     """
-    filteredResults = [
-        result for result in results
-        if result[1].lower() not in ['filtered', 'closed']
-    ]
-
     if scanMethod == 'version':  # 서비스와 배너 정보를 포함
         resultsJson = [
             {
