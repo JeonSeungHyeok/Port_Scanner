@@ -26,8 +26,7 @@ def main():
         outputXml=options.output_xml)
     
     startTime = time.time()
-    result = thread.start_thread()
-    thread.print_result(result)
+    thread.start_thread()
     elapsedTime = time.time() - startTime
     print(f'\nScan Completed. Elapsed Time: {elapsedTime:.2f}s')
 
