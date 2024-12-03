@@ -19,7 +19,7 @@ class Thread:
             numThread: int,
             maxTries: int,
             os: bool,
-            scanMethod,
+            scanMethod: str,
             cve: bool,
             outputFile: str,
             outputXml: str
