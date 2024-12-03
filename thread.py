@@ -122,7 +122,7 @@ class Thread:
                 print(f'Port {port}: {state}')
 
         if self.cve:
-            for port, state in filteredResults:
+            for port, state, service, banner in filteredResults:
                 print(f'CVE List at Port {port}: {shodan_api(ip, port, self.timeout, self.maxTries).process()}')
 
         if self.outputFile:        
