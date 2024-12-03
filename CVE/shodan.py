@@ -121,13 +121,16 @@ class shodan_api:
         if isinstance(banner, str):
             banner = banner.splitlines()
 
-        for line in banner:
-            cleaned_line = re.sub(r'[^\w\s]', ' ', line)
-            cleaned_line = re.sub(r'_', ' ', cleaned_line)
-            words = cleaned_line.split()
-            filtered_words = [word.lower() for word in words if not word.isdigit()]
-            result.extend(filtered_words)
-        return result
+        try:
+            for line in banner:
+                cleaned_line = re.sub(r'[^\w\s]', ' ', line)
+                cleaned_line = re.sub(r'_', ' ', cleaned_line)
+                words = cleaned_line.split()
+                filtered_words = [word.lower() for word in words if not word.isdigit()]
+                result.extend(filtered_words)
+            return result
+        except TypeError:
+            return ["None"]
 
     def process(self):
         self.result1, self.result2, self.product, self.banner = scan_service_version(self.ip, self.port, self.timeout, self.maxTries)
