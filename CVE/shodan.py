@@ -128,3 +128,9 @@ class shodan_api:
             filtered_words = [word.lower() for word in words if not word.isdigit()]
             result.extend(filtered_words)
         return result
+
+    def process(self):
+        self.result1, self.result2, self.product, self.banner = scan_service_version(self.ip, self.port, self.timeout, self.maxTries)
+        keyword = self.parse_strings(self.banner)
+        self.ver = self.extract_version(keyword)
+        return self.shodan_api_cpe(keyword)
