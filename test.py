@@ -24,7 +24,7 @@ def main():
         f"python main.py {ip} -P 20-50,80 -sV -T 10 -t 0.1",
         f"python main.py {ip} -P 20-50,80 -S -v -T 10 -t 0.1",
         f"python main.py {ip} -P 20-50,80 -S -v -T 10 -t 0.1 -oj result.json",
-        f"python main.py {ip} -P 20-50,80 -S -v -T 10 -t 0.1 -ox result.xml"
+        f"python main.py {ip} -P 20-50,80 -S -v -T 10 -t 0.1 -ox result.xml",
         f"python main.py {ip} -P 20-50,80 -S -v -O -T 10 -t 0.1 -oj result.json"
     ]
 
