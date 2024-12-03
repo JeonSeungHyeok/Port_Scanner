@@ -42,9 +42,8 @@ class Thread:
                 ports.extend(range(start, end + 1))  # range 결과를 리스트에 추가
             else:
                 ports.append(int(part.strip()))  # 개별 포트를 리스트에 추가
-                
-        return random.shuffle(ports)  # shuffle을 통해 보안 시스템의 연속적인 포트 스캔 탐지를 우회
-
+        random.shuffle(ports)  # shuffle을 통해 보안 시스템의 연속적인 포트 스캔 탐지를 우회
+        return ports
     def start_thread(self) -> list:     #멀티 스레드를 실행하여 스캔 시작
         results=[]
         conf.verb = 0
@@ -84,7 +83,7 @@ class Thread:
         else:
             for port, state in filteredResults:
                 print(f'Port {port}: {state}')
-            for port, state in filteredResults:
+            if self.cve:
                 print(f'CVE List at Port {port} : {shodan_api(self.ip, port, self.timeout, self.maxTries).process()}')
         
         if self.outputFile:        

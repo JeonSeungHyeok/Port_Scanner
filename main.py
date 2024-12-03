@@ -2,8 +2,10 @@ from OPTION.option import *
 from thread import *
 import argparse
 import time
+from BANNER.banner import *
 
 def main():
+    print_banner()
     parser = argparse.ArgumentParser(usage=usage_msg())     #명령줄 파서 생성
     add_options(parser)
     if hasattr(parser, 'parse_intermixed_args'):        # 파서가 parse_intermixed_args 메서드를 지원하는지 확인
