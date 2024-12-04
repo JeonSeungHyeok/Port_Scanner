@@ -103,8 +103,7 @@ class Thread:
                 futures = [executor.submit(scanMethods.get(self.scanMethod), ip, port, self.timeout,self.maxTries) for port in ports]
                 for future in as_completed(futures):
                     results.append(future.result())
-            #filteredResults = [result for result in results if result[1] == 'Unfiltered (RST received)' or result[1]=='Open' or result[1]=='Open or Filtered']
-            filteredResults=results
+            filteredResults = [result for result in results if result[1] == 'Unfiltered (RST received)' or result[1]=='Open' or result[1]=='Open or Filtered']
             filteredResults.sort(key=lambda x: x[0])
                     
             portCveList = {}
