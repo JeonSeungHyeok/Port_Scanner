@@ -82,7 +82,7 @@ class Thread:
         else:
             return [str(ipaddress.IPv4Address(ip))]
                 
-    def parse_ports(self, portInput: str) -> list:  # 포트 범위를 파싱하여 섞인 포트 목록 반환
+    def parse_ports(self, portInput:str) -> list:  # 포트 범위를 파싱하여 섞인 포트 목록 반환
         """
         Parse the received Port range and return shuffled port list
 
@@ -150,7 +150,7 @@ class Thread:
 
             self.print_result(ip=ip, results=filteredResults, osResult=osResult, portCveList=portCveList)
 
-    def print_result(self, ip: str, results: list,osResult, portCveList)->None:      # 스캔 결과를 출력하는 메서드
+    def print_result(self, ip:str, results:list, osResult, portCveList)->None:      # 스캔 결과를 출력하는 메서드
         """
         Displays scan results and saves them in JSON or XML format if specified.
 
