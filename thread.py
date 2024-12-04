@@ -103,7 +103,8 @@ class Thread:
                 futures = [executor.submit(scanMethods.get(self.scanMethod), ip, port, self.timeout,self.maxTries) for port in ports]
                 for future in as_completed(futures):
                     results.append(future.result())
-            filteredResults = [result for result in results if result[1] == 'Unfiltered (RST received)' or result[1]=='Open' or result[1]=='Open or Filtered']
+            #filteredResults = [result for result in results if result[1] == 'Unfiltered (RST received)' or result[1]=='Open' or result[1]=='Open or Filtered']
+            filteredResults=results
             filteredResults.sort(key=lambda x: x[0])
                     
             portCveList = {}
@@ -123,9 +124,9 @@ class Thread:
         if self.scanMethod == 'version':
             print(f"\n{'Result':^82}")
             print('='*82)
-            print(f"{'PORT':<10}{'STATE':<20}{'SERVICE':<20}{'BANNER'}")
+            print(f"{'PORT':<13}{'STATE':<20}{'SERVICE':<20}{'BANNER'}")
             for port, state, service, banner in results:
-                print(f"Port {port:<10}: {state:<20}{service or 'N/A':<20}{banner or 'N/A'}")
+                print(f"Port {port:<6}: {state:<20}{service or 'N/A':<20}{banner or 'N/A'}")
         else:
             for port, state in results:
                 print(f'Port {port}: {state}')
