@@ -11,7 +11,7 @@ import ipaddress
 from colors import *
 
 class Thread:
-    def __init__( # Thread 클래스 초기화 메서드
+    def __init__(
             self,
             ip: str,
             port: str,
@@ -24,6 +24,9 @@ class Thread:
             outputFile: str,
             outputXml: str
         )->None:
+        """
+        Init the class Thread
+        """
         self.ip = ip
         self.port = port
         self.timeout = timeout
@@ -36,7 +39,17 @@ class Thread:
         self.outputXml = outputXml
 
 
-    def ip_range_to_list(self, ip):
+    def ip_range_to_list(self, ip:str)->list:
+        """
+        Create IP list through the IP received by option
+        You can use ',' '-' '/'
+
+        Args:
+            ip (str): ip related str received by user input
+
+        Returns:
+            list
+        """
         if ',' in ip:
             ipList = []
             ipListTmp = ip.split(',')
@@ -70,6 +83,12 @@ class Thread:
             return [str(ipaddress.IPv4Address(ip))]
                 
     def parse_ports(self, portInput: str) -> list:  # 포트 범위를 파싱하여 섞인 포트 목록 반환
+        """
+        Parse the received Port range and return shuffled port list
+
+        Args:
+            portInput (str): port related str received by -P option
+        """
         ports = []
         
         for part in portInput.split(','):
@@ -82,7 +101,20 @@ class Thread:
         random.shuffle(ports)  # shuffle을 통해 보안 시스템의 연속적인 포트 스캔 탐지를 우회
         return ports
     
-    def start_thread(self) -> list:     #멀티 스레드를 실행하여 스캔 시작
+    def start_thread(self) -> None:     #멀티 스레드를 실행하여 스캔 시작
+        """
+        Starts the scan using multithreading. Handles both OS detection and port scanning.
+
+        Steps:
+        1. Converts the IP range to a list of individual IPs.
+        2. If OS detection is enabled (`self.os`), uses threads to run Docker-based p0f for OS detection.
+        3. Scans ports using the selected scan method (e.g., SYN, ACK, NULL, Xmas, version).
+        4. If CVE detection is enabled (`self.cve`), fetches CVE data for open or filtered ports.
+        5. Displays and optionally saves the scan results.
+
+        Returns:
+            None
+        """
         conf.verb=0
         ipList = self.ip_range_to_list(self.ip)
 
@@ -92,7 +124,6 @@ class Thread:
                 futures = [executor.submit(run_docker_p0f, os.getcwd(), ip) for ip in ipList]
                 for future in as_completed(futures):
                     osResult.update(future.result())
-            #print_os_info(osResult)
         ports = self.parse_ports(self.port)
         scanMethods = {
             'syn':scan_syn_port,
@@ -120,6 +151,15 @@ class Thread:
             self.print_result(ip=ip,results=filteredResults,osResult=osResult, portCveList=portCveList)
 
     def print_result(self, ip: str, results: list,osResult, portCveList)->None:      # 스캔 결과를 출력하는 메서드
+        """
+        Displays scan results and saves them in JSON or XML format if specified.
+
+        Args:
+            ip (str): Target IP address.
+            results (list): List of scan results.
+            osResult (dict): Detected OS information (if any).
+            portCveList (dict): Mapping of ports to CVE data (if any).
+        """
         if self.os:
             print(f"\n{YELLOW}{self.scanMethod.upper()} Scan{RESET} Result of {YELLOW}{ip}{RESET}: {osResult['OS']}")
         else:
@@ -128,10 +168,9 @@ class Thread:
         if self.scanMethod == 'version':
             print(f"\n{'Result':^82}")
             print('='*82)
-            print(f"{'PORT':<10}{'STATE':<20}{'SERVICE':<20}{'BANNER'}")
-            
+            print(f"{'PORT':<13}{'STATE':<20}{'SERVICE':<20}{'BANNER'}")
             for port, state, service, banner in results:
-                print(f"Port {port}: {state:<20}{service or 'N/A':<20}{banner or 'N/A'}")
+                print(f"Port {port:<6}: {state:<20}{service or 'N/A':<20}{banner or 'N/A'}")
         else:
             for port, state in results:
                 print(f'Port {port}: {state}')

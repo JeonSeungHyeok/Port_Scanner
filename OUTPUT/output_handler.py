@@ -2,8 +2,18 @@ import json
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 from colors import *
-def save_result_as_json(ip, results, scanMethod, outputFile, osInfo=None, portCveList=None):
-    """스캔 결과를 JSON으로 저장하는 함수"""
+def save_result_as_json(ip:str, results:tuple, scanMethod:str, outputFile:str, osInfo=None, portCveList=None)->None:
+    """
+    Create output from the scan result as Json
+
+    Args:
+        ip (str): target ip
+        results (tuple): port, state(open or closed ...), service name, service banner
+        scanMethod (str): scan method (SYN, ACK, NULL, XMAS, Service Version)
+        outputFile (str): name of the outputfile (default=scanResult.json/xml)
+        osInfo (str): If OS detection is executed str else None
+        portCveList (list): If CVE search is executed list else None
+    """
     if scanMethod == 'version':  # 서비스와 배너 정보를 포함
         resultsJson = [
             {
@@ -40,8 +50,18 @@ def save_result_as_json(ip, results, scanMethod, outputFile, osInfo=None, portCv
         json.dump(data, f, indent=4)
     print(f'{GREEN}[INFO]{RESET} Results saved as JSON to {YELLOW}{ip}_{outputFile}{RESET}')  
     
-def save_result_as_xml(ip, results, scanMethod, outputFile, osInfo=None, portCveList=None):  # 루트 엘리먼트 생성
-    """스캔 결과를 XML로 저장하는 함수"""
+def save_result_as_xml(ip:str, results:tuple, scanMethod:str, outputFile:str, osInfo=None, portCveList=None):  # 루트 엘리먼트 생성
+    """
+    Create output from the scan result as XML
+
+    Args:
+        ip (str): target ip
+        results (tuple): port, state(open or closed ...), service name, service banner
+        scanMethod (str): scan method (SYN, ACK, NULL, XMAS, Service Version)
+        outputFile (str): name of the outputfile (default=scanResult.json/xml)
+        osInfo (str): If OS detection is executed str else None
+        portCveList (list): If CVE search is executed list else None
+    """
     root = ET.Element('ScanResults', scanMethod=scanMethod)
 
     # 결과 데이터를 XML로 추가

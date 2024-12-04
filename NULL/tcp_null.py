@@ -1,8 +1,20 @@
 from scapy.all import IP, TCP, sr1
 import random
 
-def scan_null_port(targetIp, port, timeout, maxTries):
-    """단일 포트에 대해 TCP Null 스캔 수행"""
+def scan_null_port(targetIp:str, port:int, timeout:int, maxTries:int)->str:
+    """
+    Performing TCP Null Scan on a Single Port
+
+    Args:
+        targetIP (str): one of IP listed in the IP list
+        port (int): one of Port listed in the Port list
+        timeout (int): Response Time
+        maxTries (int): Number of attempts made by the tool
+
+    Return:
+        str: port, result of the scan or just str None
+
+    """
     for i in range(maxTries):
         srcPort = random.randint(10000, 65535) # 랜덤 소스 포트 설정
         nullPacket = IP(dst=targetIp) / TCP(sport=srcPort, dport=port, flags='') # Null 패킷 생성
