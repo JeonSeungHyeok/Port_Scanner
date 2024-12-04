@@ -21,7 +21,7 @@ class shodan_api:
         self.cpe = None
         self.cve = None
 
-    def shodan_api_cpe(self, keywords:list)->function:
+    def shodan_api_cpe(self, keywords:list):
         """
         Use shodan api for receiving cpe about the service
         shodan: Shodan is the world's first search engine for Internet-connected devices.
@@ -197,7 +197,7 @@ class shodan_api:
         except TypeError:
             return ["None"]
 
-    def process(self)->function:
+    def process(self):
         """
         Every action of this class is excuted by this function
         This function uses SYN Scan
