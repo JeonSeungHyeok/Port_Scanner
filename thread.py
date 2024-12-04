@@ -148,7 +148,7 @@ class Thread:
                     cveData = shodan_api(self.ip, port, self.timeout, self.maxTries).process()
                     portCveList[port] = cveData if cveData else []
 
-            self.print_result(ip=ip,results=filteredResults,osResult=osResult, portCveList=portCveList)
+            self.print_result(ip=ip, results=filteredResults, osResult=osResult, portCveList=portCveList)
 
     def print_result(self, ip: str, results: list,osResult, portCveList)->None:      # 스캔 결과를 출력하는 메서드
         """
