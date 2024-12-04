@@ -1,4 +1,5 @@
 # Port_Scanner
+
 ```
 ██████╗  ██████╗ ██████╗ ████████╗
 ██╔══██╗██╔═══██╗██╔══██╗╚══██╔══╝
@@ -14,6 +15,7 @@
 ███████║╚██████╗██║  ██║██║ ╚████║██║ ╚████║███████╗██║  ██║
 ╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝
 ```
+
 ### Usage
 
 <hr>
@@ -23,7 +25,7 @@
     - Windows : ```setup.bat```
     - Linux or Mac : ```setup.sh```
 2. the setup script requires an argument
-    - ```install``` : make an docker image ```p0f``` ( if your platform is Windows you have to run docker-desktop before executing setup file )
+    - ```install``` : make an docker image ```p0f``` <br>( if your platform is Windows you have to run docker-desktop before executing setup file )
     - ```remove``` : remove an docker image ```p0f```
 3. After setup completed you can execute the code with command following
     - ```python3 main.py```

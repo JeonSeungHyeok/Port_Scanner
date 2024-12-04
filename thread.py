@@ -115,7 +115,7 @@ class Thread:
         Returns:
             None
         """
-        conf.verb=0
+        #conf.verb=0
         ipList = self.ip_range_to_list(self.ip)
 
         osResult={}
@@ -145,7 +145,7 @@ class Thread:
             portCveList = {}
             if self.cve:
                 for port, state, *_ in filteredResults:
-                    cveData = shodan_api(self.ip, port, self.timeout, self.maxTries).process()
+                    cveData = shodan_api(ip, port, self.timeout, self.maxTries).process()
                     portCveList[port] = cveData if cveData else []
 
             self.print_result(ip=ip,results=filteredResults,osResult=osResult, portCveList=portCveList)
@@ -177,7 +177,7 @@ class Thread:
         
         if self.cve:
             for port in results:
-                print(f'CVE List at Port {port[0]}: {shodan_api(ip, port[0], self.timeout, self.maxTries).process()}')
+                print(f'CVE List at Port {port[0]}: {portCveList[port[0]]}')
 
         if self.outputFile:        
             save_result_as_json(ip, results, self.scanMethod, self.outputFile, osResult, portCveList)

@@ -50,7 +50,7 @@ def save_result_as_json(ip:str, results:tuple, scanMethod:str, outputFile:str, o
         json.dump(data, f, indent=4)
     print(f'{GREEN}[INFO]{RESET} Results saved as JSON to {YELLOW}{ip}_{outputFile}{RESET}')  
     
-def save_result_as_xml(ip:str, results:tuple, scanMethod:str, outputFile:str, osInfo=None, portCveList=None):  # 루트 엘리먼트 생성
+def save_result_as_xml(ip:str, results:tuple, scanMethod:str, outputFile:str, osInfo=None, portCveList=None):
     """
     Create output from the scan result as XML
 
@@ -62,6 +62,7 @@ def save_result_as_xml(ip:str, results:tuple, scanMethod:str, outputFile:str, os
         osInfo (str): If OS detection is executed str else None
         portCveList (list): If CVE search is executed list else None
     """
+    # 루트 엘리먼트 생성
     root = ET.Element('ScanResults', scanMethod=scanMethod)
 
     # 결과 데이터를 XML로 추가

@@ -47,24 +47,6 @@ def run_docker_p0f(logDir:str, targetIp:str)->dict:
         print(f'{RED}[-]{RESET} Error while ececuting Docker Container: {e}')
         return 'Unknown'
     time.sleep(3)
-    #max_retries = 3
-    #for attempt in range(max_retries):
-    #    try:
-    #        subprocess.run(['curl', f'{targetIp}:80'], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    #        print(f'{BLUE}[*]{RESET} HTTP Request sent successfully to {YELLOW}{targetIp}{RESET}')
-    #        break
-    #    except subprocess.CalledProcessError as e:
-    #        if attempt < max_retries - 1:
-    #            print(f'{RED}[-]{RESET} Retry {attempt + 1}/{max_retries}')
-    #            time.sleep(2)
-    #        else:
-    #            print(f'{RED}[-]{RESET} HTTP Request failed: {e}')
-    #    finally:
-    #        stdout, stderr = p0fProc.communicate(timeout=10)
-    #        if stdout:
-    #            print(f'Docker stdout:\n{stdout}')
-    #        if stderr:
-    #            print(f'Docker stderr:\n{stderr}')
     logFile = logDirPath / f'{targetIp}_p0f_output.log'
     osInfo = extract_os_info(logFile)
     return dict(ip=targetIp, OS=osInfo)
