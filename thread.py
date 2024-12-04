@@ -161,9 +161,9 @@ class Thread:
             portCveList (dict): Mapping of ports to CVE data (if any).
         """
         if self.os:
-            print(f"\n{YELLOW}{self.scanMethod.upper()} Scan{RESET} Result of {YELLOW}{ip}{RESET}: {osResult['OS']}")
-        else:
-            print(f"\n{YELLOW}{self.scanMethod.upper()} Scan{RESET} Result of {YELLOW}{ip}{RESET}: ")
+            print(f"\n{YELLOW}OS Scan{RESET} Result of {YELLOW}{ip}{RESET}: {osResult['OS']}")
+
+        print(f"\n{YELLOW}{self.scanMethod.upper()} Scan{RESET} Result of {YELLOW}{ip}{RESET}: ")
 
         if self.scanMethod == 'version':
             print(f"\n{'Result':^82}")
