@@ -1,8 +1,8 @@
 #!/bin/bash
 
-LOG_FILE="/var/log/p0f/p0f_output.log"
-
 TARGET_IP="$1"
+
+LOG_FILE="/var/log/p0f/${TARGET_IP}_p0f_output.log"
 
 if [ -z "$TARGET_IP" ]; then
     echo "Usage: $0 <target_ip>"

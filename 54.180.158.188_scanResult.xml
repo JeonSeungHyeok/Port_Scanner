@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<ScanResults scanMethod="ack">
+    <Result>
+        <Port>21</Port>
+        <State>Unfiltered (RST received)</State>
+    </Result>
+    <Result>
+        <Port>22</Port>
+        <State>Unfiltered (RST received)</State>
+    </Result>
+    <Result>
+        <Port>80</Port>
+        <State>Unfiltered (RST received)</State>
+    </Result>
+    <OSInfo>
+        <OS>???</OS>
+    </OSInfo>
+</ScanResults>

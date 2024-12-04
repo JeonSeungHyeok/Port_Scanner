@@ -1,0 +1,17 @@
+{
+    "scanMethod": "ack",
+    "results": [
+        {
+            "port": 21,
+            "state": "Unfiltered (RST received)"
+        },
+        {
+            "port": 22,
+            "state": "Unfiltered (RST received)"
+        },
+        {
+            "port": 80,
+            "state": "Unfiltered (RST received)"
+        }
+    ]
+}

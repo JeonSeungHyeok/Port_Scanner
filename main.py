@@ -1,22 +1,34 @@
-from option import *
+from OPTION.option import *
 from thread import *
 import argparse
-import sys
 import time
+from BANNER.banner import *
 
 def main():
-    parser = argparse.ArgumentParser(usage=usage_msg())
+    print_banner()
+    parser = argparse.ArgumentParser(usage=usage_msg())     #명령줄 파서 생성
     add_options(parser)
-    if hasattr(parser, 'parse_intermixed_args'):
+    if hasattr(parser, 'parse_intermixed_args'):        # 파서가 parse_intermixed_args 메서드를 지원하는지 확인
         options = parser.parse_intermixed_args()
     else:
         options = parser.parse_args()
 
-   
-    output_json = options.output_json and options.service_version
-    thread = Thread(ip=options.ip,port=options.port,timeout=options.time,numThread=options.threads,maxTries=options.tries,os=options.os,scanMethod=option(options),output_json=options.output_json)
-    result, time = thread.start_thread()
-    thread.print_result(result)
+    thread = Thread(
+        ip=options.ip,
+        port=options.port,
+        timeout=options.time,
+        numThread=options.threads,
+        maxTries=options.tries,
+        os=options.os,
+        scanMethod=option(options),
+        cve = options.cve,
+        outputFile=options.output_json,
+        outputXml=options.output_xml)
+    
+    startTime = time.time()
+    thread.start_thread()
+    elapsedTime = time.time() - startTime
+    print(f'\nScan Completed. Elapsed Time: {elapsedTime:.2f}s')
 
-if __name__=="__main__":
+if __name__=='__main__':
     main()
