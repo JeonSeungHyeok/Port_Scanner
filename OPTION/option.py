@@ -1,8 +1,17 @@
-def usage_msg():
+def usage_msg()->str:
+    """
+    Return the option of this tool
+    """
     return 'python3 main.py <ip> [-sV] [-S] [-A] [-N] [-X] -P PORT [-T THREADS] [-t TIMEOUT] [-M TRIES] [-O] [-oj] [-ox] [-v]'
 
-def add_options(parser):
-    """명령줄 인자를 추가하는 함수"""
+def add_options(parser:object)->None:
+    """
+    Functions that add command line factors
+    If you want to add or modify the features use this function
+
+    Args:
+        argparse.ArgumentParser <object>
+    """
     parser.add_argument('-S', dest='syn', action='store_true', help='TCP SYN scan')
     parser.add_argument('-A', dest='ack', action='store_true', help='TCP ACK scan')
     parser.add_argument('-N', dest='Null', action='store_true', help='TCP Null scan')
@@ -21,7 +30,16 @@ def add_options(parser):
     parser.add_argument('-oj', dest='output_json', type=str, nargs='?', const='scanResult.json', help='Output JSON file')
     parser.add_argument('-ox', dest='output_xml', type=str, nargs='?', const='scanResult.xml', help='Output XML file')
 
-def option(options):  # 사용자가 선택한 스캔 옵션을 처리하는 함수
+def option(options:object)->str:  # 사용자가 선택한 스캔 옵션을 처리하는 함수
+    """
+    Return the scan method received by the user
+
+    Args:
+        argparse.ArgumentParser <object>
+
+    Return:
+        str: scan method
+    """
     if options.service_version:
         return 'version'
     elif options.syn:
