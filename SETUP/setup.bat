@@ -10,5 +10,5 @@ if "%1" == "install" (
     docker rmi -f p0f
     echo Docker image 'p0f' removed successfully.
 ) else (
-    echo Usage: %~nx0 {install|remove}
+    echo Usage: %~nx0 {install^|remove}
 )
