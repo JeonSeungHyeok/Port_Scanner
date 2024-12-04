@@ -145,7 +145,7 @@ class Thread:
             portCveList = {}
             if self.cve:
                 for port, state, *_ in filteredResults:
-                    cveData = shodan_api(self.ip, port, self.timeout, self.maxTries).process()
+                    cveData = shodan_api(ip, port, self.timeout, self.maxTries).process()
                     portCveList[port] = cveData if cveData else []
 
             self.print_result(ip=ip, results=filteredResults, osResult=osResult, portCveList=portCveList)
